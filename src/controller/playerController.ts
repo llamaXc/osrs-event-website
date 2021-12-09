@@ -1,6 +1,6 @@
 import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
-import { IBasicItemDropped, IEquippedItems, IItemDrop, INpcKill } from '../state/database';
+import { IBasicItemDropped } from '../state/database';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -29,12 +29,8 @@ export class PlayerController{
     async getInventory(req: Request, res: Response){
         // let player = await this.getPlayerFromHeader(req)
         let player = await this._playerService.getPlayerByHash('a5345127-b33d-4565-a530-2ffe0970fac6');
-
         if(player){
-            
             let invo = await this._playerService.getInventory(player);
-            console.log("GETTING INVO FOR: " + player.token)
-            console.log(invo)
             return res.json(invo).status(200)
         }
 
@@ -53,8 +49,6 @@ export class PlayerController{
             await this._playerService.updatePlayerLevels(player, lvlMap, totalLvl);
         }
         
-        console.log("Updated invo for player: " + player?.token);
-
         res.send("Done")
     }
 
@@ -62,8 +56,6 @@ export class PlayerController{
         let player = await this._playerService.getPlayerByHash('a5345127-b33d-4565-a530-2ffe0970fac6');
         if (player){
             let lvl =  await this._playerService.getLevelsForPlayer(player);
-            console.log("returning")
-            console.log(lvl)
             let arrayOfLevels = []
             if(lvl){
                 for (let curLevel of Array.from(lvl.levels.keys())){
@@ -97,8 +89,6 @@ export class PlayerController{
             await this._playerService.updateInventoryItems(data['inventory'], player, value)
         }
         
-        console.log("Updated invo for player: " + player?.token);
-
         res.send("Done")
     }
 
@@ -116,7 +106,6 @@ export class PlayerController{
                     mapOfSlots.set(k, item)
                 }
             }
-            console.log(mapOfSlots)
 
             await this._playerService.updateEquippiedItems(mapOfSlots, player)
         }
