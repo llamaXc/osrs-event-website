@@ -42,15 +42,12 @@ export class PlayerService{
             y: x,
             z: plane
         }
-        console.log("SUpp info update: " + player.id)
         await this._playerRepo.updatePosition(player, coords);
         await this._playerRepo.updateNameAndLevel(player, username, combatLevel);
     }
 
     async getPosition(player: IPlayer){
-        let pos =  await this._playerRepo.getPosition(player);
-        console.log(JSON.stringify(pos) + " POSITION")
-        return pos;
+        return await this._playerRepo.getPosition(player);
     }
 
     async getPlayerById(playerId: number){
@@ -172,21 +169,24 @@ export class PlayerService{
     }
 
     async updatePlayerLevels(player: IPlayer, levelsMap: Map<string, number>, totalLevel: number){
-        let convertedLevels: Map<string, ILevel> = new Map()
+        console.log(levelsMap);
+
+
+        let levelsFormatted: ILevels = {
+            levels: new Map<string, ILevel>(),
+            total: totalLevel,
+        }
+
         for (let levelName of Array.from(levelsMap.keys())){
             let extractedLevel = levelsMap.get(levelName);
             if(extractedLevel){
                 let lvl : ILevel = <ILevel>{name: levelName, level: extractedLevel, xp: 1}
-                convertedLevels.set(levelName, lvl);
+                levelsFormatted.levels.set(levelName, lvl);
             }
         }
-        
-        let levels = <ILevels>{
-            total: totalLevel,
-            levels: convertedLevels
-        }
 
-        return await this._playerRepo.updatePlayerLevels(levels, player)
+        //TODO: Levels are broken since set does not keep value....
+        // return await this._playerRepo.updatePlayerLevels(levelsFormatted, player)
     }
 
     async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: IPlayer){

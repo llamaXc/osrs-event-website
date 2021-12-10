@@ -24,6 +24,7 @@ router.post('/equipped_items', async (req,res) => {
 })
 
 router.post('/level_change', async (req,res) => {
+    console.log("CHANGE LEVELS")
     playerController.updateLevels(req, res);
 })
 

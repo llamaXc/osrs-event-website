@@ -61,7 +61,7 @@ export interface IEquippedItems extends Saveable{
     ammo?: IItemDrop 
 }
 
-export interface ILevel extends Saveable{
+export interface ILevel{
     name: string,
     xp: number,
     level: number
@@ -158,23 +158,15 @@ class Database{
     }
 
     async updateLevelsByPlayerId(playerId: PlayerId, levels: ILevels){
+        console.log(playerId + JSON.stringify(levels))
         await this.state.levels.set(playerId, levels);
     }
 
     async updatePositionByPlayerId(playerId: PlayerId, coords: ICoordinate){
-        console.log("Updating player coords: " + JSON.stringify(coords))
-        console.log("ID: " + playerId);
         await this.state.positions.set(playerId, coords)
-        console.log(JSON.stringify(this.state.positions))
-        console.log("=== done udpating")
-        
     }
 
     async getPositionByPlayerId(playerId: PlayerId): Promise<ICoordinate | undefined>{
-        console.log("======player id====: " + playerId);
-        console.log(JSON.stringify(this.state.positions));
-        let c = await this.state.positions.get(playerId);
-        console.log("Fetching c: " + JSON.stringify(c))
         return await this.state.positions.get(playerId);
     }
 
@@ -188,6 +180,8 @@ class Database{
     }
 
     async getLevelsByPlayerId(playerId: PlayerId){
+        let l = await this.state.levels.get(playerId)
+        console.log(playerId + " GETT" + JSON.stringify(l))
         return await this.state.levels.get(playerId);
     }
 

@@ -133,7 +133,6 @@ export class PlayerController{
                     id: id,
                     state: state
                 }
-                console.log(formatted);
 
                 questListFormatted.quests.push(formatted);
             }
