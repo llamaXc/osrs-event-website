@@ -1,5 +1,5 @@
 import { PlayerRepository } from '../repository/playerRepositroy'
-import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel, ICoordinate } from '../state/database';
+import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel, ICoordinate, IQuestList, IBank } from '../state/database';
 import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
 const crypto = require('crypto')
@@ -9,8 +9,16 @@ export class PlayerService{
         private readonly _monsterService: MonsterService,
         private readonly _itemService: ItemService){}
 
-    async getNpcKills(player: IPlayer){
-        return this._playerRepo.getNpcKillsForPlayer(player);
+    async getNpcKills(player: IPlayer): Promise<INpcKill[]>{
+        return await this._playerRepo.getNpcKillsForPlayer(player);
+    }
+
+    async updateQuestList(player: IPlayer, questList: IQuestList){
+        return await this._playerRepo.updateQuestListForPlayer(player, questList);
+    }
+
+    async getQuestListForPlayer(player: IPlayer){
+        return await this._playerRepo.getQuestListForPlayer(player);
     }
 
     async doesPlayerExist(playerToken: string){
@@ -34,16 +42,28 @@ export class PlayerService{
             y: x,
             z: plane
         }
+        console.log("SUpp info update: " + player.id)
         await this._playerRepo.updatePosition(player, coords);
         await this._playerRepo.updateNameAndLevel(player, username, combatLevel);
+    }
+
+    async getPosition(player: IPlayer){
+        let pos =  await this._playerRepo.getPosition(player);
+        console.log(JSON.stringify(pos) + " POSITION")
+        return pos;
     }
 
     async getPlayerById(playerId: number){
         return await this._playerRepo.getPlayerById(playerId);
     }
 
-    async getPlayerByHash(playerToken: string){
-        return await this._playerRepo.getPlayerByToken(playerToken);
+    async getPlayerByHash(playerToken: string): Promise<IPlayer>{
+        let player = await this._playerRepo.getPlayerByToken(playerToken);
+        if(player){
+            return player;
+        }else{
+            throw new Error("Cant find player")
+        }
     }
 
     async getInventory(player: IPlayer){
@@ -166,6 +186,28 @@ export class PlayerService{
             levels: convertedLevels
         }
 
-        return this._playerRepo.updatePlayerLevels(levels, player)
+        return await this._playerRepo.updatePlayerLevels(levels, player)
+    }
+
+    async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: IPlayer){
+        let bankSlotItems: IItem[] = []
+        for(const basicItemInfo of bankItems){
+            if(basicItemInfo){
+                let item = await this._itemService.getItemById(basicItemInfo.id)
+                if(item){
+                    bankSlotItems.push(item);
+                }
+            }
+        }
+
+        let bank : IBank = {
+            items: bankSlotItems,
+            value: value
+        }
+        return await this._playerRepo.updateBank(player, bank)
+    }
+
+    async getBank(player: IPlayer){
+        return await this._playerRepo.getBank(player);
     }
 }

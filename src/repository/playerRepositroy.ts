@@ -1,4 +1,4 @@
-import Database, { ICoordinate, IEquippedItems, IInventory, ILevels, IPlayer } from "../state/database";
+import Database, { IBank, ICoordinate, IEquippedItems, IInventory, ILevels, IPlayer, IQuest, IQuestList, PlayerId } from "../state/database";
 import { INpcKill, IMonster } from "../state/database";
 
 export class PlayerRepository{
@@ -11,8 +11,24 @@ export class PlayerRepository{
         return await this._db.createNpcKillForPlayer(npcKill, player)
     }
 
-    async getNpcKillsForPlayer(player: IPlayer){
-        return await  this._db.getKillsFromPlayerId(player.id);
+    async updateBank(player: IPlayer, bank: IBank){
+        return await this._db.updateBank(player.id, bank);
+    }
+
+    async getBank(player: IPlayer){
+        return await this._db.getBank(player.id);
+    }
+
+    async updateQuestListForPlayer(player: IPlayer, questList: IQuestList){
+        return await this._db.updateQuestList(player.id, questList);
+    }
+
+    async getQuestListForPlayer(player: IPlayer): Promise<IQuestList|undefined>{
+        return await this._db.getQuestList(player.id);
+    }
+
+    async getNpcKillsForPlayer(player: IPlayer): Promise<INpcKill[]>{
+        return await this._db.getKillsFromPlayerId(player.id);
     }
 
     async addNewPlayer(player: IPlayer){
@@ -23,6 +39,10 @@ export class PlayerRepository{
         let current_unix_time = Math.floor(Date.now() / 1000)
         coords.time_updated = current_unix_time;
         await this._db.updatePositionByPlayerId(player.id, coords);
+    }
+
+    async getPosition(player: IPlayer){
+        return await this._db.getPositionByPlayerId(player.id);
     }
 
     async updateNameAndLevel(player: IPlayer, username: string, level: number){

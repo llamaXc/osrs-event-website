@@ -78,6 +78,28 @@ export interface ICoordinate extends Saveable{
     z?: number
 }
 
+export enum IQuestState{
+    IN_PROGRESS = 'IN_PROGRESS',
+    FINISHED = "FINISHED",
+    NOT_STARTED = "NOT_STARTED"
+}
+
+export interface IQuest{
+    name: string,
+    id: number,
+    state: IQuestState
+}
+
+export interface IQuestList extends Saveable{
+    quests: IQuest[],
+    qp: number
+}
+
+export interface IBank extends Saveable{
+    items: IItem[],
+    value: number
+}
+
 export type PlayerHash = string
 export type PlayerId = number
 export type NpcId = number
@@ -87,19 +109,21 @@ export interface IDatabaseState{
     monsters: Map<NpcId, IMonster>,
     items: Map<ItemId, IItem>,
 
-    npcKills: Map<PlayerId, INpcKill>,
+    npcKills: Map<PlayerId, INpcKill[]>,
     players: Map<PlayerId, IPlayer>,
     invos: Map<PlayerId, IInventory>,
     equippedItems: Map<PlayerId, IEquippedItems>,
     levels: Map<PlayerId, ILevels>,
     positions: Map<PlayerId, ICoordinate>,
+    quests: Map<PlayerId, IQuestList>,
+    banks: Map<PlayerId, IBank>,
     playerIdToPlayerHash: Map<PlayerId, PlayerHash>
     playerHashToPlayerId: Map<PlayerHash, PlayerId>
 }
 
 class Database{
     private state: IDatabaseState = {
-        npcKills: new Map<PlayerId, INpcKill>(),
+        npcKills: new Map<PlayerId, INpcKill[]>(),
         players: new Map<PlayerId, IPlayer>(),
         monsters: new Map<NpcId, IMonster>(),
         items: new Map<ItemId, IItem>(),
@@ -107,9 +131,30 @@ class Database{
         equippedItems: new Map<PlayerId, IEquippedItems>(),
         levels: new Map<PlayerId, ILevels>(),
         positions: new Map<PlayerId, ICoordinate>(),
+        quests: new Map<PlayerId, IQuestList>(),
+        banks: new Map<PlayerId, IBank>(),
         playerIdToPlayerHash: new Map<number, string>(),
         playerHashToPlayerId: new Map<PlayerHash, PlayerId>()
 
+    }
+
+    async updateBank(playerId: PlayerId, bank: IBank){
+        return await this.state.banks.set(playerId, bank);
+    }
+
+    async getBank(playerId: PlayerId){
+        return await this.state.banks.get(playerId);
+    }
+
+    async updateQuestList(playerId: PlayerId, questList: IQuestList){
+        return await this.state.quests.set(playerId, questList);
+    }
+
+    async getQuestList(playerId: PlayerId): Promise<IQuestList|undefined>{
+        let quests = await this.state.quests.get(playerId);
+        if(quests){
+            return await this.state.quests.get(playerId);
+        }
     }
 
     async updateLevelsByPlayerId(playerId: PlayerId, levels: ILevels){
@@ -117,14 +162,19 @@ class Database{
     }
 
     async updatePositionByPlayerId(playerId: PlayerId, coords: ICoordinate){
-        console.log("Update player position: " + coords);
-        let curCords = await this.getPositionByPlayerId(playerId);
-        if(curCords && (curCords.x != coords.x || curCords.y != coords.y)){
-            await this.state.positions.set(playerId, coords)
-        }
+        console.log("Updating player coords: " + JSON.stringify(coords))
+        console.log("ID: " + playerId);
+        await this.state.positions.set(playerId, coords)
+        console.log(JSON.stringify(this.state.positions))
+        console.log("=== done udpating")
+        
     }
 
     async getPositionByPlayerId(playerId: PlayerId): Promise<ICoordinate | undefined>{
+        console.log("======player id====: " + playerId);
+        console.log(JSON.stringify(this.state.positions));
+        let c = await this.state.positions.get(playerId);
+        console.log("Fetching c: " + JSON.stringify(c))
         return await this.state.positions.get(playerId);
     }
 
@@ -141,8 +191,13 @@ class Database{
         return await this.state.levels.get(playerId);
     }
 
-    async getKillsFromPlayerId(playerId: PlayerId){
-        return await this.state.npcKills.get(playerId);
+    async getKillsFromPlayerId(playerId: PlayerId): Promise<INpcKill[]>{
+        let kills = await this.state.npcKills.get(playerId);
+        if(kills == undefined){
+            return []
+        }else{
+            return kills;
+        }
     }
     
     async insertPlayer(player: IPlayer){
@@ -207,7 +262,16 @@ class Database{
     }
 
     async createNpcKillForPlayer(npcData: INpcKill, player: IPlayer){
-        return this.state.npcKills.set(player.id, npcData)
+        let npcKills = this.state.npcKills.get(player.id);
+        console.log("Creating kill for playerId: " + player.id)
+        if(npcKills){
+            await npcKills.push(npcData);
+            return this.state.npcKills.set(player.id, npcKills)
+        }else{
+            let kills: INpcKill[] = [npcData];
+            return this.state.npcKills.set(player.id, kills)
+        }
+
     }
 }
 

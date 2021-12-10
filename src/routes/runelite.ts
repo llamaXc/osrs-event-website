@@ -3,6 +3,14 @@ import {playerController} from '../setup/initalize'
 
 let router = express.Router();
 
+router.use('/', (req, res, next)=> {
+    try{
+        next();
+    }catch(ex){
+        return res.json({msg: "Server Error: " + ex}).status(500);
+    }
+})
+
 router.post('/npc_kill', (req, res) => {
     playerController.saveNpcLoot(req, res)
 })
@@ -12,13 +20,19 @@ router.post('/inventory_items',(req, res) => {
 })
 
 router.post('/equipped_items', async (req,res) => {
-    console.log("Calling equipped_items")
     playerController.updateEquippedItems(req, res);
 })
 
 router.post('/level_change', async (req,res) => {
-    console.log("Calling levels!")
     playerController.updateLevels(req, res);
+})
+
+router.post('/quest_change', async (req,res) => {
+    playerController.updateQuests(req, res);
+})
+
+router.post('/bank', async (req, res) => {
+    playerController.updateBank(req, res);
 })
 
 router.get('/player/:id', async(req, res) => {

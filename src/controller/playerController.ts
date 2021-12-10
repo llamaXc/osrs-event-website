@@ -1,6 +1,6 @@
 import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
-import { IBasicItemDropped } from '../state/database';
+import { IBasicItemDropped, IItem, IItemDrop, IQuest, IQuestList, IQuestState } from '../state/database';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -27,15 +27,17 @@ export class PlayerController{
                 username = supplementInfo['username']
             }
             await this._playerService.registerNewPlayer(playerHash, username);
+            doesExist = true
         }
 
-        if(supplementInfo !== null){
+        if(supplementInfo !== null && doesExist){
             const {combatLevel, position, username} = supplementInfo
             const {x, y, plane} = position;
-            
+            let player = await this._playerService.getPlayerByHash(playerHash);
+
             await this._playerService.updateSupplementInformation(
+                player,
                 combatLevel, 
-                position, 
                 username, 
                 x, 
                 y, 
@@ -57,9 +59,10 @@ export class PlayerController{
                 completeData['invo'] = await this._playerService.getInventory(player)
                 completeData['armour'] = await this._playerService.getEquippedItemsByForPlayer(player);
                 completeData['kills'] = await this._playerService.getNpcKills(player);
+                completeData['quests'] = await this._playerService.getQuestListForPlayer(player);
+                completeData['bank'] = await this._playerService.getBank(player);
+                completeData['position'] = await this._playerService.getPosition(player);
             }
-
-            console.log(completeData);
             return res.json(completeData);
         }catch{
             return res.status(404);
@@ -85,11 +88,64 @@ export class PlayerController{
         if(player){
             let lvlMap = new Map<string, number>(Object.entries(data['levels']))
             let totalLvl = data['totalLevel']
-            console.log(lvlMap)
             await this._playerService.updatePlayerLevels(player, lvlMap, totalLvl);
         }
         
         res.send("Done")
+    }
+
+    async updateBank(req: Request, res: Response){
+        let player = await this.getPlayerFromHeader(req);
+        let data = req.body.data;
+        if(player){
+            let {items, value} = data;
+
+            let itemArray = Array.from(items);
+            let bankItems : IBasicItemDropped[] = []
+            for(const rawItemInfo of itemArray){
+                let bankBasicItemInfo: IBasicItemDropped = rawItemInfo as IBasicItemDropped;
+                bankItems.push(bankBasicItemInfo);
+            }
+
+            await this._playerService.updateBankItems(bankItems, value, player);
+
+        }
+        return res.status(200);
+    }
+
+    async updateQuests(req: Request, res: Response){
+        let player = await this.getPlayerFromHeader(req);
+        let data = req.body.data;
+
+        if(player){
+            let questArray = Array.from(data['quests'])
+            let questListEmpty: IQuest[] = []
+            let questListFormatted: IQuestList = {qp: 0, quests: questListEmpty}
+
+            for (let i = 0; i < questArray.length; i++){
+                let quest : any = questArray[i];
+                let state: IQuestState = "FINISHED" as IQuestState
+                let name: string = quest['name']
+                let id: number = quest['id']
+
+                let formatted: IQuest = {
+                    name: name,
+                    id: id,
+                    state: state
+                }
+                console.log(formatted);
+
+                questListFormatted.quests.push(formatted);
+            }
+
+            let qp = data['qp']
+            questListFormatted.qp = qp;
+
+            this._playerService.updateQuestList(player, questListFormatted);
+            return res.status(200);
+        }
+
+        return res.status(404);
     }
 
     async getLevelsTest(req: Request, res: Response){
