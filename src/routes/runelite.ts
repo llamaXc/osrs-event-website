@@ -21,12 +21,16 @@ router.post('/level_change', async (req,res) => {
     playerController.updateLevels(req, res);
 })
 
+router.get('/player/:id', async(req, res) => {
+    playerController.getPlayerById(req, res);
+})
+
 router.get('/inventory_items', async (req,res) => {
-    playerController.getInventory(req, res)
+    playerController.getInventoryTest(req, res)
 })
 
 router.get('/npc_kill', async (req,res) => {
-    playerController.getNpcKills(req, res)
+    playerController.getNpcKillsTest(req, res)
 })
 
 router.get('/equipped_items', async (req,res) => {

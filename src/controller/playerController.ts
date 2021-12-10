@@ -11,6 +11,7 @@ export class PlayerController{
 
     async getPlayerFromHeader(req: Request){
         let header = req.headers;
+        let supplementInfo = req.body['playerInfo']
 
         let authBearer = header['authorization']
         let playerHash = ''
@@ -19,14 +20,53 @@ export class PlayerController{
         }
 
         let doesExist = await this._playerService.doesPlayerExist(playerHash);
-        if(doesExist == false){
-            await this._playerService.registerNewPlayer(playerHash, "New Player");
+
+        if(!doesExist){
+            let username = "Zezima"
+            if(supplementInfo !== null){
+                username = supplementInfo['username']
+            }
+            await this._playerService.registerNewPlayer(playerHash, username);
+        }
+
+        if(supplementInfo !== null){
+            const {combatLevel, position, username} = supplementInfo
+            const {x, y, plane} = position;
+            
+            await this._playerService.updateSupplementInformation(
+                combatLevel, 
+                position, 
+                username, 
+                x, 
+                y, 
+                plane
+            );
         }
 
        return await this._playerService.getPlayerByHash(playerHash);
     }
     
-    async getInventory(req: Request, res: Response){
+    async getPlayerById(req: Request, res: Response){
+        try{
+            let id = parseInt(req.params.id);
+            let player = await this._playerService.getPlayerById(id);
+            let completeData : any = {}
+            if(player){
+                completeData['player'] = await this._playerService.getPlayerById(id);
+                completeData['levels'] = await this._playerService.getLevelsForPlayer(player)
+                completeData['invo'] = await this._playerService.getInventory(player)
+                completeData['armour'] = await this._playerService.getEquippedItemsByForPlayer(player);
+                completeData['kills'] = await this._playerService.getNpcKills(player);
+            }
+
+            console.log(completeData);
+            return res.json(completeData);
+        }catch{
+            return res.status(404);
+        }
+    }
+
+    async getInventoryTest(req: Request, res: Response){
         // let player = await this.getPlayerFromHeader(req)
         let player = await this._playerService.getPlayerByHash('a5345127-b33d-4565-a530-2ffe0970fac6');
         if(player){
@@ -137,7 +177,11 @@ export class PlayerController{
         res.send("Done")
     }
 
-    async getNpcKills(req : Request, res: Response){
-        return res.send(await this._playerService.getAllNpcKills())
+    async getNpcKillsTest(req : Request, res: Response){
+        let player = await this._playerService.getPlayerById(1);
+        if(player){
+            return res.send(await this._playerService.getNpcKills(player))
+        }
+        return res.status(404);
     }
 }

@@ -24,3 +24,8 @@ export const playerController = new PlayerController(playerService);
 
 const monsterImporter = new MonsterImporter(monsterService, "../../data/monsters-complete.json")
 const itemImporter = new ItemImporter(itemService, "../../data/items-complete.json")
+
+
+playerService.registerNewPlayer("int GIM", '1111').then(() => {
+    console.log(">Initalize< int GIM")
+})

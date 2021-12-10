@@ -1,55 +1,68 @@
-import Database, { IEquippedItems, IInventory, ILevels, IPlayer } from "../state/database";
+import Database, { ICoordinate, IEquippedItems, IInventory, ILevels, IPlayer } from "../state/database";
 import { INpcKill, IMonster } from "../state/database";
 
 export class PlayerRepository{
     private readonly _db = Database;
 
-    async createNpcKill(npcKill: INpcKill){
+    async createNpcKill(npcKill: INpcKill, player: IPlayer){
         let current_unix_time = Math.floor(Date.now() / 1000)
         npcKill.time_updated = current_unix_time;
         npcKill.time_created= current_unix_time
-
-        return this._db.createNpcKill(npcKill)
+        return await this._db.createNpcKillForPlayer(npcKill, player)
     }
 
-    async getAllNpcKills(){
-        return this._db.findAllNpcKills();
+    async getNpcKillsForPlayer(player: IPlayer){
+        return await  this._db.getKillsFromPlayerId(player.id);
     }
 
     async addNewPlayer(player: IPlayer){
-        return this._db.insertPlayer(player);
+        return await this._db.insertPlayer(player);
+    }
+    
+    async updatePosition(player: IPlayer, coords: ICoordinate){
+        let current_unix_time = Math.floor(Date.now() / 1000)
+        coords.time_updated = current_unix_time;
+        await this._db.updatePositionByPlayerId(player.id, coords);
+    }
+
+    async updateNameAndLevel(player: IPlayer, username: string, level: number){
+        return await this._db.updateUsernameAndLevelByPlayerId(player.id, username, level);
     }
 
     async getPlayerByToken(token: string){
-        return this._db.getPlayerByHash(token);
+        return await this._db.getPlayerByHash(token);
+    }
+
+    async getPlayerById(id: number){
+        return await this._db.getPlayerById(id);
     }
 
     async getPlayerInventory(player: IPlayer){
-        return await this._db.getInventoryByPlayerHash(player.token)
+        return await this._db.getInventoryByPlayerId(player.id)
     }
 
     async updatePlayerInventory(player: IPlayer, invo: IInventory){
-        if (await this._db.getInventoryByPlayerHash(player.token) === null){
+        if (await this._db.getInventoryByPlayerId(player.id) === null){
             invo.time_created = Math.floor(Date.now() / 1000)
         }
-        return await this._db.updateInventoryByPlayerHash(player.token, invo)
+        return await this._db.updateInventoryByPlayerId(player.id, invo)
     }
 
     async getPlayerEquippedItems(player: IPlayer){
-        return await this._db.getEquippedItemsByPlayerHash(player.token)
+        return await this._db.getEquippedItemsByPlayerId(player.id)
     }
 
     async updatePlayerEquippedItems(equippedItem: IEquippedItems, player: IPlayer){
-        return await this._db.updateEquippedItemByPlayerHash(player.token, equippedItem)
+        return await this._db.updateEquippedItemByPlayerId(player.id, equippedItem)
     }
 
     async updatePlayerLevels(levels: ILevels, player: IPlayer){
         levels.time_updated = Math.floor(Date.now() / 1000);
-        return await this._db.updateLevelsByPlayerHash(player.token, levels)
+        return await this._db.updateLevelsByPlayerId(player.id, levels)
     }
 
     async getPlayerLevels(player: IPlayer){
-        return await this._db.getLevelsByPlayerHash(player.token);
+        return await this._db.getLevelsByPlayerId(player.id);
 
     }
 }

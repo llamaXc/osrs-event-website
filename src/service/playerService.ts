@@ -1,30 +1,49 @@
-import { updateCall } from 'typescript';
 import { PlayerRepository } from '../repository/playerRepositroy'
-import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel } from '../state/database';
+import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel, ICoordinate } from '../state/database';
 import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
+const crypto = require('crypto')
 
 export class PlayerService{
     constructor(private readonly _playerRepo: PlayerRepository, 
         private readonly _monsterService: MonsterService,
         private readonly _itemService: ItemService){}
 
-    async getAllNpcKills(){
-        return this._playerRepo.getAllNpcKills();
+    async getNpcKills(player: IPlayer){
+        return this._playerRepo.getNpcKillsForPlayer(player);
     }
 
     async doesPlayerExist(playerToken: string){
-        return false;
+        let player = await this._playerRepo.getPlayerByToken(playerToken);
+        return player !== undefined;
     }
 
-    async registerNewPlayer(playerToken: string, name: string){
-        return this._playerRepo.addNewPlayer(<IPlayer>{
-            token: playerToken, name: name, id: 1
+    async registerNewPlayer(username: string, key: string){
+        if(key == undefined){
+            key = crypto.randomUUID();
+        }
+        console.log("New Player being registered: key=" + key)
+        return await this._playerRepo.addNewPlayer(<IPlayer>{
+            username: username, token: key
         })
     }
 
+    async updateSupplementInformation(player: IPlayer, combatLevel: number, username: string, x: number, y: number, plane: number){
+        let coords: ICoordinate = {
+            x: x,
+            y: x,
+            z: plane
+        }
+        await this._playerRepo.updatePosition(player, coords);
+        await this._playerRepo.updateNameAndLevel(player, username, combatLevel);
+    }
+
+    async getPlayerById(playerId: number){
+        return await this._playerRepo.getPlayerById(playerId);
+    }
+
     async getPlayerByHash(playerToken: string){
-        return this._playerRepo.getPlayerByToken(playerToken);
+        return await this._playerRepo.getPlayerByToken(playerToken);
     }
 
     async getInventory(player: IPlayer){
@@ -125,7 +144,7 @@ export class PlayerService{
         }
 
         console.log(npcKill)
-        return this._playerRepo.createNpcKill(npcKill);
+        return this._playerRepo.createNpcKill(npcKill, player);
     }
 
     async getLevelsForPlayer(player: IPlayer){
@@ -146,9 +165,6 @@ export class PlayerService{
             total: totalLevel,
             levels: convertedLevels
         }
-
-        console.log("Passing ILevels obj")
-        console.log(levels)
 
         return this._playerRepo.updatePlayerLevels(levels, player)
     }

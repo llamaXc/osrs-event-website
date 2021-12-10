@@ -37,7 +37,7 @@ export class MonsterImporter{
         };
 
         this.monsterService.populateMonsters(monstersToAdd).then( () => {
-            console.log("Saved monsters!")
+            console.log(">Initalized< NPCs")
         });
     }
 }
@@ -72,7 +72,7 @@ export class ItemImporter{
         };
 
         this.itemService.populateItems(itemsToAdd).then( () => {
-            console.log("Saved items!")
+            console.log(">Initalized< Items")
         });
     }
 }
