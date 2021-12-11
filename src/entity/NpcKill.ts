@@ -1,5 +1,5 @@
 import {Entity, Column, BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany, ManyToOne, ManyToMany, JoinTable} from "typeorm";
-import { Item, ItemDrop } from "./Item";
+import { ItemDrop } from "./ItemDrop";
 import { Monster } from "./Monster";
 import { Player } from "./Player";
 

@@ -1,6 +1,6 @@
 import { Monster } from "../../entity/Monster";
 
 export interface IMonsterRepository{
-    // saveMonster(monster: Monster): Promise<boolean>
+    insertMonster(monster: Monster): Promise<Monster|undefined>
     getMonsterById(id: number): Promise<Monster|undefined>
 }

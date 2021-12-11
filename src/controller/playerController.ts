@@ -1,6 +1,5 @@
 import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
-import { IBasicItemDropped, IQuest, IQuestList, IQuestState } from '../state/database';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;

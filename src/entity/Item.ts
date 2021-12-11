@@ -1,5 +1,4 @@
-import {Entity, Column, BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinTable} from "typeorm";
-import { NpcKill } from "./NpcKill";
+import {Entity, Column, BaseEntity, PrimaryColumn} from "typeorm";
 
 @Entity()
 export class Item extends BaseEntity{
@@ -14,25 +13,3 @@ export class Item extends BaseEntity{
     icon: string;
 
 }
-
-@Entity()
-export class ItemDrop extends BaseEntity{
-
-    @PrimaryGeneratedColumn()
-    id: number;
-
-    @ManyToOne(() => Item, {eager: true})
-    @JoinTable()
-    item: Item;
-
-    @Column()
-    quantity: number;
-
-    @ManyToOne(type => NpcKill, kill => kill.items)
-    kill: NpcKill
-}
-
-
-
-
-

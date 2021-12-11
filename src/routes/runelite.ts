@@ -1,7 +1,8 @@
 import express from 'express';
-import {playerController} from '../setup/initalize'
 
-let router = express.Router();
+import {playerController} from "../controller/Controllers"
+
+const router = express.Router();
 
 router.post('/npc_kill', (req, res) => {
     console.log("NPC KILL")

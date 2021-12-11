@@ -1,16 +1,18 @@
-import { ItemDrop } from '../entity/Item';
+import { ItemDrop } from '../entity/ItemDrop';
 import { NpcKill } from '../entity/NpcKill';
 import { Player } from '../entity/Player';
 import { IPlayerRepository } from '../repository/interfaces/IPlayerRepository'
-import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel, ICoordinate, IQuestList, IBank } from '../state/database';
+import { IBasicItemDropped } from '../state/old_ts';
 import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
-const crypto = require('crypto')
+import crypto from "crypto"
 
 export class PlayerService{
-    constructor(private readonly _playerRepo: IPlayerRepository, 
+    constructor(private readonly _playerRepo: IPlayerRepository,
         private readonly _monsterService: MonsterService,
-        private readonly _itemService: ItemService){}
+        private readonly _itemService: ItemService){
+            console.log("PlayerService initalized succesfully");
+        }
 
     async getNpcKills(player: Player): Promise<NpcKill[]>{
         return await this._playerRepo.getNpcKillsForPlayer(player);
@@ -25,19 +27,17 @@ export class PlayerService{
     // }
 
     async doesPlayerExist(playerToken: string){
-        let player = await this._playerRepo.getPlayerByToken(playerToken);
-        return player !== undefined;
+        return await this._playerRepo.getPlayerByToken(playerToken) !== undefined;
     }
 
-    // async registerNewPlayer(username: string, key: string){
-    //     if(key == undefined){
-    //         key = crypto.randomUUID();
-    //     }
-    //     console.log("New Player being registered: key=" + key)
-    //     return await this._playerRepo.addNewPlayer(<IPlayer>{
-    //         username: username, token: key
-    //     })
-    // }
+    async registerNewPlayer(username: string, key: string){
+        if(key === undefined){
+            key = crypto.randomUUID();
+        }
+        return await this._playerRepo.addNewPlayer({
+            username, token: key, combatLevel: 0
+        } as Player)
+    }
 
     // async updateSupplementInformation(player: IPlayer, combatLevel: number, username: string, x: number, y: number, plane: number){
     //     let coords: ICoordinate = {
@@ -58,7 +58,7 @@ export class PlayerService{
     }
 
     async getPlayerByHash(playerToken: string): Promise<Player>{
-        let player = await this._playerRepo.getPlayerByToken(playerToken);
+        const player = await this._playerRepo.getPlayerByToken(playerToken);
         if(player){
             return player;
         }else{
@@ -69,7 +69,7 @@ export class PlayerService{
     // async getInventory(player: IPlayer){
     //     return await this._playerRepo.getPlayerInventory(player)
     // }
-    
+
     // async turnMappedEquipmentToSlot(item?: IBasicItemDropped){
     //     if(item){
     //         let fetchedItem = await this._itemService.getItemById(item.id);
@@ -141,17 +141,17 @@ export class PlayerService{
     // }
 
     async createNpcKill(npcId: number, droppedItems: IBasicItemDropped[], killValue: number, player: Player){
-        let kill : NpcKill = new NpcKill();
+        const kill : NpcKill = new NpcKill();
         kill.killValue = killValue;
-        
-        let npc = await this._monsterService.getMonsterById(npcId);
-        let items : ItemDrop[] = [];
+
+        const npc = await this._monsterService.getMonsterById(npcId);
+        const items : ItemDrop[] = [];
 
         for (const item of droppedItems){
-            let fetchedItem = await this._itemService.getItemById(item.id)
+            const fetchedItem = await this._itemService.getItemById(item.id)
 
             if(fetchedItem){
-                let droppedItem : ItemDrop = new ItemDrop();
+                const droppedItem : ItemDrop = new ItemDrop();
                 droppedItem.quantity =  item.quantity
                 droppedItem.kill = kill
                 droppedItem.item = fetchedItem;
@@ -160,24 +160,12 @@ export class PlayerService{
             }
         }
 
-        console.log(JSON.stringify(items, null, 2));
-
         if(npc){
             return this._playerRepo.createNpcKill(kill, items, npc, player);
         }else{
-            console.log("Unable to find monster with id: " + npcId);
+            return undefined
         }
 
-        // let npcKill : INpcKill = <INpcKill>{
-        //     id: 1,
-        //     killValue: killValue,
-        //     items: items,
-        //     npc: npc,
-        //     player: player,
-        // }
-
-        // console.log(npcKill)
-        // return this._playerRepo.createNpcKill(npcKill, player);
     }
 
     // async getLevelsForPlayer(player: IPlayer){
@@ -188,7 +176,7 @@ export class PlayerService{
     //     let levelsFormatted: ILevels = {
     //         levels: new Map<string, ILevel>(),
     //         total: totalLevel,
-    //     }   
+    //     }
 
     //     let keys = Array.from(levelsMap.keys());
     //     for (let key of keys){

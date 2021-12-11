@@ -1,4 +1,4 @@
-import { ItemDrop } from "../../entity/Item";
+import { ItemDrop } from "../../entity/ItemDrop";
 import { Monster } from "../../entity/Monster";
 import { NpcKill } from "../../entity/NpcKill";
 import { Player } from "../../entity/Player";
@@ -6,20 +6,20 @@ import { IPlayerRepository } from "./../interfaces/IPlayerRepository";
 
 export class TypeOrmPlayerRepository implements IPlayerRepository{
 
-    async createNpcKill(npcKill: NpcKill, droppedItems: ItemDrop[], npc: Monster, player: Player): Promise<boolean>{
+    async createNpcKill(npcKill: NpcKill, droppedItems: ItemDrop[], npc: Monster, player: Player): Promise<NpcKill|undefined>{
         console.log("Creating NPC Kill");
 
         npcKill.player = player;
         npcKill.monster = npc;
-        await NpcKill.save(npcKill);
+        // await NpcKill.save(npcKill);
 
-        for(let item of droppedItems){
-            item.kill = npcKill;
-            await ItemDrop.save(item);
-        }
+        // for(const item of droppedItems){
+        //     item.kill = npcKill;
+        //     await ItemDrop.save(item);
+        // }
+        npcKill.items = droppedItems;
 
-        await NpcKill.save(npcKill);
-        return true;
+        return await NpcKill.save(npcKill);
     }
 
     async getPlayerByToken(playerToken: string): Promise<Player|undefined>{
@@ -55,7 +55,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
     async addNewPlayer(player: Player): Promise<Player>{
         return await Player.save(player);
     }
-    
+
     // async updatePosition(player: IPlayer, coords: ICoordinate): Promise<boolean>{
     //     let current_unix_time = Math.floor(Date.now() / 1000)
     //     coords.time_updated = current_unix_time;
