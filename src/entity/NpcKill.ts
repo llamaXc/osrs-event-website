@@ -9,18 +9,17 @@ export class NpcKill extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    // @OneToMany(type => Monster, monster => monster.id)
-    // @JoinColumn()
-    // npc: Monster;
-
     @Column()
     killValue: number
 
-    @OneToMany(() => ItemDrop, item => item.kill, {eager: true})
-    @JoinTable()
+    @OneToMany(() => ItemDrop, item => item.kill, {eager: true, cascade: true})
     items: ItemDrop[]
 
-    @ManyToOne(type => Player, player => player.id, {eager: true})
+    @ManyToOne(type => Monster, monster => monster.id, {eager: true, cascade: true})
+    @JoinColumn()
+    monster: Monster;
+
+    @ManyToOne(type => Player, player => player.id, {eager: true, cascade: true})
     @JoinColumn()
     player: Player
 }

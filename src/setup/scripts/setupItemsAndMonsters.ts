@@ -2,13 +2,13 @@ import "reflect-metadata";
 const fs = require('fs');
 const path = require("path");
 import {createConnection} from "typeorm";
-import { Item, ItemDrop } from "../entity/Item";
-import { Monster } from "../entity/Monster";
-import { NpcKill } from "../entity/NpcKill";
-import { Player } from "../entity/Player";
+import { Item, ItemDrop } from "../../entity/Item";
+import { Monster } from "../../entity/Monster";
+import { NpcKill } from "../../entity/NpcKill";
+import { Player } from "../../entity/Player";
 
-const MONSTER_PATH = "../../data/json/monsters-complete.json"
-const ITEM_PATH    = "../../data/json/items-complete.json"
+const MONSTER_PATH = "../../../data/json/monsters-complete.json"
+const ITEM_PATH    = "../../../data/json/items-complete.json"
 
 function getDataFromFile(filepath: string){
     let rawdata = fs.readFileSync(path.resolve(__dirname, filepath));
@@ -52,7 +52,7 @@ async function importItems(){
 
 createConnection({
     type: "sqlite",
-    database: "../../data/sqlite3/dev.sqlite",
+    database: "../../data/sqlite3/dev_test.sqlite",
     synchronize: true,
     entities: [ Player, NpcKill, Item, Monster, ItemDrop],
     logging: false

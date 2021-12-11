@@ -138,7 +138,6 @@ class Database{
         banks: new Map<PlayerId, IBank>(),
         playerIdToPlayerHash: new Map<number, string>(),
         playerHashToPlayerId: new Map<PlayerHash, PlayerId>()
-
     }
 
     async updateBank(playerId: PlayerId, bank: IBank){

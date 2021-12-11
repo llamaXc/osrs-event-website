@@ -1,4 +1,4 @@
-import {Entity, Column, BaseEntity, PrimaryColumn} from "typeorm";
+import {Entity, Column, BaseEntity, PrimaryColumn, ManyToMany, JoinTable, ManyToOne} from "typeorm";
 
 @Entity()
 export class Monster extends BaseEntity{

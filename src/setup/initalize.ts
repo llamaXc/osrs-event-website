@@ -1,111 +1,84 @@
 import {createConnection} from "typeorm";
 import { PlayerController } from '../controller/playerController';
-import { InMemeoryItemRepository } from '../repository/itemRepository';
-import { InMemoryMonsterRepository } from '../repository/monsterRepository';
-import { InMemoryPlayerRepo } from '../repository/playerRepositroy';
-import { MonsterService } from '../service/monsterService';
-import { PlayerService } from '../service/playerService';
-import { ItemService } from '../service/itemService';
-import { ItemImporter, MonsterImporter } from './importOsrsData';
-import { GroupRepository } from '../repository/groupRepoistory';
-import { GroupService } from '../service/groupService';
 
 import { Player } from "../entity/Player";
 import { NpcKill } from "../entity/NpcKill";
 import { Item, ItemDrop } from "../entity/Item";
 import { Monster } from "../entity/Monster";
+import { TypeOrmPlayerRepository } from "../repository/typeorm/PlayerRepository";
+import { TypeOrmMonsterRepository } from "../repository/typeorm/MonsterRepository";
+import { TypeOrmItemRepository } from "../repository/typeorm/ItemRepository";
+import { ItemService } from "../service/itemService";
+import { MonsterService } from "../service/monsterService";
+import { PlayerService } from "../service/playerService";
 
-export const playerRepo = new InMemoryPlayerRepo();
-export const monsterRepo = new InMemoryMonsterRepository();
-export const itemRepo = new InMemeoryItemRepository();
-export const groupRepo = new GroupRepository();
+export const playerRepo  = new TypeOrmPlayerRepository();
+export const monsterRepo = new TypeOrmMonsterRepository();
+export const itemRepo    = new TypeOrmItemRepository();
 
-export const itemService = new ItemService(itemRepo);
+export const itemService    = new ItemService(itemRepo);
 export const monsterService = new MonsterService(monsterRepo);
-export const playerService = new PlayerService(playerRepo, monsterService, itemService);
-export const groupService = new GroupService(groupRepo, playerService);
+export const playerService  = new PlayerService(playerRepo, monsterService, itemService);
 
 export const playerController = new PlayerController(playerService);
 
-playerService.registerNewPlayer("int GIM", '1111').then(() => {
-    console.log(">Initalize< int GIM")
-})
+// playerService.registerNewPlayer("int GIM", '1111').then(() => {
+//     console.log(">Initalize< int GIM")
+// })
 
 createConnection({
     type: "sqlite",
-    database: "../../data/sqlite3/dev.sqlite",
+    database: "../../data/sqlite3/dev_test.sqlite",
     synchronize: true,
     entities: [ Player, NpcKill, Item, Monster, ItemDrop],
     logging: true
 }).then( async function(connection){
     console.log("Initalized SQLITE Database")
+    await connection.synchronize();
 
-    let bandos = new Monster();
-    bandos.combat_level = 200;
-    bandos.name = "Bandos"
-    bandos.hitpoints = 100;
-    bandos.id = 15;
+    // let bandos = await Monster.findOne(6588);
 
-    try{
-        await Monster.save(bandos);
-        console.log("saved bandos")
-    }catch(err){
-        let found = await Monster.findOne(15);
-        if(found){
-            bandos = found;
-        }
-        console.log("Bandos already exists");
-    }
     
-    let osrsPlayer = await Player.findOne({username: 'Iron 69M'})
-    if(osrsPlayer){
-        console.log(osrsPlayer);
+    // let osrsPlayer = await Player.findOne({username: 'Iron 69M'})
+    // if(osrsPlayer && bandos){
 
-        let item = new Item();
-        item.id = 20;
-        item.icon = "ABCD"
-        item.name = "Scimatar"
-        let [items, count] = await Item.findAndCount({where: {id: 20}})
+    //     console.log("================ NPC FROM KILL: " + bandos.name + "================")
+    //     let item1 = await Item.findOne(11798)
 
 
-        console.log("Item count: " + count)
-        if(count == 0){
-            console.log("Saving new item")
-            await Item.save(item);
-        }
+    //     let kill = new NpcKill();
+    //     kill.monster = bandos;
+    //     kill.killValue = 140000;
+    //     kill.player = osrsPlayer;
 
+    //     await NpcKill.save(kill);
 
-        let kill = new NpcKill();
-        let dragonScimmy = await Item.findOne(20);
-        let itemDrop = new ItemDrop();
-        itemDrop.quantity = 4;
-        
+    //     let itemDrop = new ItemDrop();
+    //     let itemDrop2 = new ItemDrop();
 
-        kill.killValue = Math.floor(Math.random() * 100000);
-        kill.player = osrsPlayer;
-        kill.items = [];
-        // kill.npc = bandos;
+    //     itemDrop.quantity = 4;
+    //     itemDrop2.quantity =2
 
-        if(kill && dragonScimmy){
-            console.log("adding d scimmy to kill items")
-            itemDrop.item = dragonScimmy
-            await NpcKill.save(kill);
+    //     if(item1){
+    //         itemDrop.item = item1;
+    //         itemDrop.kill = kill;
 
-            itemDrop.kill = kill;
-            await ItemDrop.save(itemDrop);
-            console.log("=== Item Drop ====")
-            console.log(itemDrop)
+    //         itemDrop2.kill = kill;
+    //         itemDrop2.item = item1;
+    //         kill.monster = bandos;
+    //         await ItemDrop.save(itemDrop)
+    //         await ItemDrop.save(itemDrop2)
+    //     }
 
-            kill.items.push(itemDrop);
-            await NpcKill.save(kill);
+    //     kill.items = [itemDrop, itemDrop2];
+    //     await NpcKill.save(kill);
 
-        }
-    }
-
-    // let latest = await Player.findOne({username: 'Iron 69M'})
+    // }
    
-    let kills = await NpcKill.find({where: {player: osrsPlayer}});
-    console.log(JSON.stringify(kills[kills.length - 1], null, 2));
+    // let kills = await NpcKill.find({where: {player: osrsPlayer}});
+    // console.log(JSON.stringify(kills[kills.length - 1], null, 2));
+
+
     // console.log(kills[kills.length - 1]);
     // osrsPlayer.combatLevel = 100;
     // osrsPlayer.username = "Iron 69M";
