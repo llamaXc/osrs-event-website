@@ -10,7 +10,7 @@ export interface IPlayerRepository{
     // updateQuestListForPlayer(player: IPlayer, questList: IQuestList): Promise<boolean>
     // getQuestListForPlayer(player: IPlayer): Promise<IQuestList|undefined>
     getNpcKillsForPlayer(player: Player): Promise<NpcKill[]>
-    // addNewPlayer(player: IPlayer):  Promise<boolean>
+    addNewPlayer(player: Player):  Promise<Player>
     // updatePosition(player: IPlayer, coords: ICoordinate): Promise<boolean>
     // getPosition(player: IPlayer): Promise<ICoordinate|undefined>
     // updateNameAndLevel(player: IPlayer, username: string, level: number): Promise<boolean>

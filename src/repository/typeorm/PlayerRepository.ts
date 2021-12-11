@@ -52,10 +52,9 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         return await NpcKill.find({where: {player: {id: player.id}}});
     }
 
-    // async addNewPlayer(player: IPlayer): Promise<boolean>{
-    //     await this._db.insertPlayer(player);
-    //     return true;
-    // }
+    async addNewPlayer(player: Player): Promise<Player>{
+        return await Player.save(player);
+    }
     
     // async updatePosition(player: IPlayer, coords: ICoordinate): Promise<boolean>{
     //     let current_unix_time = Math.floor(Date.now() / 1000)

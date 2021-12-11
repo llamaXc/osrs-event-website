@@ -1,4 +1,4 @@
-import {Entity, Column, BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn, OneToMany, ManyToMany, JoinTable, UsingJoinTableIsNotAllowedError} from "typeorm";
+import {Entity, Column, BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinTable} from "typeorm";
 import { NpcKill } from "./NpcKill";
 
 @Entity()
