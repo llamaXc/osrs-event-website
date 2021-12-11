@@ -1,11 +1,13 @@
 import Database from "../state/database";
 import { IItem } from "../state/database";
+import { IItemIRepository } from "./interfaces/IItemRepository";
 
-export class ItemRepository{
+export class InMemeoryRepository implements IItemIRepository{
     private readonly _db = Database;
 
-    async saveItem(item: IItem){
-        return this._db.insertItem(item);
+    async saveItem(item: IItem): Promise<boolean>{
+        await this._db.insertItem(item);
+        return true;
     }
 
     async getItemById(id: number){

@@ -158,7 +158,6 @@ class Database{
     }
 
     async updateLevelsByPlayerId(playerId: PlayerId, levels: ILevels){
-        console.log(playerId + JSON.stringify(levels))
         await this.state.levels.set(playerId, levels);
     }
 
@@ -180,8 +179,6 @@ class Database{
     }
 
     async getLevelsByPlayerId(playerId: PlayerId){
-        let l = await this.state.levels.get(playerId)
-        console.log(playerId + " GETT" + JSON.stringify(l))
         return await this.state.levels.get(playerId);
     }
 
@@ -196,11 +193,8 @@ class Database{
     
     async insertPlayer(player: IPlayer){
         player.id = await this.state.players.size + 1;
-
         this.state.playerIdToPlayerHash.set(player.id, player.token);
         this.state.playerHashToPlayerId.set(player.token, player.id);
-
-        console.log("Inserting player: " + player.username + " id: " + player.id + "\ntoken: " + player.token);
         await this.state.players.set(player.id, player)
     }
 
@@ -257,7 +251,6 @@ class Database{
 
     async createNpcKillForPlayer(npcData: INpcKill, player: IPlayer){
         let npcKills = this.state.npcKills.get(player.id);
-        console.log("Creating kill for playerId: " + player.id)
         if(npcKills){
             await npcKills.push(npcData);
             return this.state.npcKills.set(player.id, npcKills)
@@ -265,7 +258,6 @@ class Database{
             let kills: INpcKill[] = [npcData];
             return this.state.npcKills.set(player.id, kills)
         }
-
     }
 }
 

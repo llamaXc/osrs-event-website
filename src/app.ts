@@ -1,14 +1,16 @@
-require('./setup/initalize')
-var cors = require('cors');
+import express from 'express';
+import "reflect-metadata";
 
-import express, { json } from 'express';
+require('./setup/initalize')
+
+const cors = require('cors');
 const app = express();
-const runeliteRouter = require('./routes/runelite')
 const port = 3000;
+const runeliteRouter = require('./routes/runelite')
+
 
 app.use(express.json());
 app.use(cors())
-
 app.use('/api', runeliteRouter);
 
 app.listen( port, () => {

@@ -55,13 +55,22 @@ export class PlayerController{
             let completeData : any = {}
             if(player){
                 completeData['player'] = await this._playerService.getPlayerById(id);
-                completeData['levels'] = await this._playerService.getLevelsForPlayer(player)
+               
+                let lvls = await this._playerService.getLevelsForPlayer(player)
+                completeData['levels'] = lvls
+                if(lvls){
+                    completeData['levels']['levels'] = Array.from(lvls.levels.values())
+                }
+
                 completeData['invo'] = await this._playerService.getInventory(player)
                 completeData['armour'] = await this._playerService.getEquippedItemsByForPlayer(player);
                 completeData['kills'] = await this._playerService.getNpcKills(player);
                 completeData['quests'] = await this._playerService.getQuestListForPlayer(player);
                 completeData['bank'] = await this._playerService.getBank(player);
                 completeData['position'] = await this._playerService.getPosition(player);
+                
+    
+        
             }
             return res.json(completeData);
         }catch{

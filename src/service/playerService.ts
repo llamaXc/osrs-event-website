@@ -1,11 +1,11 @@
-import { PlayerRepository } from '../repository/playerRepositroy'
+import { IPlayerRepository } from '../repository/interfaces/IPlayerRepository'
 import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel, ICoordinate, IQuestList, IBank } from '../state/database';
 import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
 const crypto = require('crypto')
 
 export class PlayerService{
-    constructor(private readonly _playerRepo: PlayerRepository, 
+    constructor(private readonly _playerRepo: IPlayerRepository, 
         private readonly _monsterService: MonsterService,
         private readonly _itemService: ItemService){}
 
@@ -169,24 +169,26 @@ export class PlayerService{
     }
 
     async updatePlayerLevels(player: IPlayer, levelsMap: Map<string, number>, totalLevel: number){
-        console.log(levelsMap);
-
-
         let levelsFormatted: ILevels = {
             levels: new Map<string, ILevel>(),
             total: totalLevel,
-        }
+        }   
 
-        for (let levelName of Array.from(levelsMap.keys())){
-            let extractedLevel = levelsMap.get(levelName);
-            if(extractedLevel){
-                let lvl : ILevel = <ILevel>{name: levelName, level: extractedLevel, xp: 1}
-                levelsFormatted.levels.set(levelName, lvl);
+        let keys = Array.from(levelsMap.keys());
+        for (let key of keys){
+            let lvl: ILevel = {
+                name: key,
+                level: 1,
+                xp: 1
             }
+
+            let levels = levelsFormatted.levels;
+            levels.set(key, lvl);
+            levelsFormatted.levels = levels;
+
         }
 
-        //TODO: Levels are broken since set does not keep value....
-        // return await this._playerRepo.updatePlayerLevels(levelsFormatted, player)
+        return await this._playerRepo.updatePlayerLevels(levelsFormatted, player)
     }
 
     async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: IPlayer){
