@@ -1,6 +1,6 @@
 import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
-import { IBasicItemDropped, IItem, IItemDrop, IQuest, IQuestList, IQuestState } from '../state/database';
+import { IBasicItemDropped, IQuest, IQuestList, IQuestState } from '../state/database';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -68,9 +68,6 @@ export class PlayerController{
                 completeData['quests'] = await this._playerService.getQuestListForPlayer(player);
                 completeData['bank'] = await this._playerService.getBank(player);
                 completeData['position'] = await this._playerService.getPosition(player);
-                
-    
-        
             }
             return res.json(completeData);
         }catch{

@@ -11,7 +11,7 @@ export interface IPlayerRepository{
     updatePosition(player: IPlayer, coords: ICoordinate): Promise<boolean>
     getPosition(player: IPlayer): Promise<ICoordinate|undefined>
     updateNameAndLevel(player: IPlayer, username: string, level: number): Promise<boolean>
-    getPlayerByToken(token: string): Promise<IPlayer|undefined>
+    getPlayerByToken(token: string): Promise<Player|undefined>
     getPlayerById(id: number): Promise<IPlayer|undefined>
     getPlayerInventory(player: IPlayer): Promise<IInventory|undefined>
     updatePlayerInventory(player: IPlayer, invo: IInventory): Promise<boolean>

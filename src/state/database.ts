@@ -1,3 +1,6 @@
+import { Item } from "../entity/Item"
+import { Monster } from "../entity/Monster"
+
 export interface IItemDrop{
     item: IItem,
     quantity: number,
@@ -106,8 +109,8 @@ export type NpcId = number
 export type ItemId = number
 
 export interface IDatabaseState{
-    monsters: Map<NpcId, IMonster>,
-    items: Map<ItemId, IItem>,
+    monsters: Map<NpcId, Monster>,
+    items: Map<ItemId, Item>,
 
     npcKills: Map<PlayerId, INpcKill[]>,
     players: Map<PlayerId, IPlayer>,
@@ -125,8 +128,8 @@ class Database{
     private state: IDatabaseState = {
         npcKills: new Map<PlayerId, INpcKill[]>(),
         players: new Map<PlayerId, IPlayer>(),
-        monsters: new Map<NpcId, IMonster>(),
-        items: new Map<ItemId, IItem>(),
+        monsters: new Map<NpcId, Monster>(),
+        items: new Map<ItemId, Item>(),
         invos: new Map<PlayerId, IInventory>(),
         equippedItems: new Map<PlayerId, IEquippedItems>(),
         levels: new Map<PlayerId, ILevels>(),
@@ -233,11 +236,11 @@ class Database{
         return await this.state.playerIdToPlayerHash.get(playerId)
     }
 
-    async insertMonster(monster: IMonster){
+    async insertMonster(monster: Monster){
         return this.state.monsters.set(monster.id, monster);
     }
 
-    async insertItem(item : IItem){
+    async insertItem(item : Item){
         return this.state.items.set(item.id, item)
     }
 

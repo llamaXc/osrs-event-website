@@ -1,6 +1,6 @@
-import { IItem } from "../../state/database";
+import { Item } from "../../entity/Item";
 
 export interface IItemIRepository{
-    saveItem(item: IItem): Promise<boolean>
-    getItemById(id: number): Promise<IItem|undefined>
+    saveItem(item: Item): Promise<boolean>
+    getItemById(id: number): Promise<Item|undefined>
 }

@@ -1,3 +1,5 @@
+import { Item } from "../entity/Item";
+import { Monster } from "../entity/Monster";
 import { ItemService } from "../service/itemService";
 import { MonsterService } from "../service/monsterService";
 import { IItem, IMonster } from "../state/database";
@@ -21,18 +23,17 @@ export class MonsterImporter{
         
         let monstersMap =  new Map(Object.entries(monstersMapRaw))
         
-        let monstersToAdd : [IMonster?] = []
+        let monstersToAdd : Monster[] = []
         let keys = Array.from(monstersMap.keys())
         
         for (var i = 0; i < keys.length; i++){
             let monster : any = monstersMap.get(keys[i])
-            let create : IMonster = {
-                name: monster['name'],
-                combat_level: monster['combat_level'],
-                max_hit: monster['max_hit'],
-                id: monster['id'],
-                hitpoints: monster['hitpoints']
-            }
+            let create : Monster = new Monster()
+            create.name = monster['name'],
+            create.combat_level = monster['combat_level'],
+            create.max_hit = monster['max_hit'],
+            create.id = monster['id'],
+            create.hitpoints = monster['hitpoints']
             monstersToAdd.push(create);
         };
 
@@ -58,16 +59,15 @@ export class ItemImporter{
         
         let itemsMap =  new Map(Object.entries(itemsMapRaw))
         
-        let itemsToAdd : [IItem?] = []
+        let itemsToAdd : Item[] = []
         let keys = Array.from(itemsMap.keys())
         
         for (var i = 0; i < keys.length; i++){
             let item : any = itemsMap.get(keys[i])
-            let create : IItem = {
-                name: item['name'],
-                id: item['id'],
-                icon: item['icon']
-            }
+            let create : Item = new Item()
+            create.name =item['name'],
+            create.id = item['id'],
+            create.icon =item['icon']
             itemsToAdd.push(create);
         };
 

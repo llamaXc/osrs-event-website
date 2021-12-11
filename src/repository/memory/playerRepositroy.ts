@@ -1,6 +1,6 @@
-import Database, { IBank, ICoordinate, IEquippedItems, IInventory, ILevels, IPlayer, IQuest, IQuestList, PlayerId } from "../state/database";
-import { INpcKill } from "../state/database";
-import { IPlayerRepository } from "./interfaces/IPlayerRepository";
+import Database, { IBank, ICoordinate, IEquippedItems, IInventory, ILevels, IPlayer,  IQuestList } from "../../state/database";
+import { INpcKill } from "../../state/database";
+import { IPlayerRepository } from "./../interfaces/IPlayerRepository";
 
 export class InMemoryPlayerRepo implements IPlayerRepository{
     private readonly _db = Database;
@@ -56,7 +56,7 @@ export class InMemoryPlayerRepo implements IPlayerRepository{
         return true;
     }
 
-    async getPlayerByToken(token: string): Promise<IPlayer|undefined>{
+    async getPlayerByToken(token: string): Promise<Player|undefined>{
         return await this._db.getPlayerByHash(token);
     }
 

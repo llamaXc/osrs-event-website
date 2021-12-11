@@ -1,10 +1,10 @@
-import { ItemRepository } from '../repository/itemRepository';
-import { IItem } from '../state/database';
+import { Item } from '../entity/Item';
+import { IItemIRepository } from '../repository/interfaces/IItemRepository';
 
 export class ItemService{
-    constructor(private readonly _itemRepo: ItemRepository){}
+    constructor(private readonly _itemRepo: IItemIRepository){}
 
-    async populateItems(items: [IItem?]){
+    async populateItems(items: Item[]){
         for (const item of items){
             if(item != null){
                 await this._itemRepo.saveItem(item)

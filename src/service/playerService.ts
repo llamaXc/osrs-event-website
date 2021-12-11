@@ -1,3 +1,6 @@
+import { ItemDrop } from '../entity/Item';
+import { NpcKill } from '../entity/NpcKill';
+import { Player } from '../entity/Player';
 import { IPlayerRepository } from '../repository/interfaces/IPlayerRepository'
 import { INpcKill, IItemDrop, IBasicItemDropped, IPlayer, IInventory, IItem, IEquippedItems, ILevels, ILevel, ICoordinate, IQuestList, IBank } from '../state/database';
 import { ItemService } from './itemService';
@@ -54,7 +57,7 @@ export class PlayerService{
         return await this._playerRepo.getPlayerById(playerId);
     }
 
-    async getPlayerByHash(playerToken: string): Promise<IPlayer>{
+    async getPlayerByHash(playerToken: string): Promise<Player>{
         let player = await this._playerRepo.getPlayerByToken(playerToken);
         if(player){
             return player;
@@ -137,31 +140,41 @@ export class PlayerService{
         return await this._playerRepo.updatePlayerInventory(player, invo);
     }
 
-    async createNpcKill(npcId: number, droppedItems: IBasicItemDropped[], killValue: number, player: IPlayer){
-        let npc = await this._monsterService.getMonsterById(npcId);
-        let items : IItemDrop[] = [];
+    async createNpcKill(npcId: number, droppedItems: IBasicItemDropped[], killValue: number, player: Player){
+        let kill : NpcKill = new NpcKill();
+        kill.killValue = killValue;
+        kill.player = player;
+        await NpcKill.save(kill);
+
+        // kill.items
+      
+
+        // let npc = await this._monsterService.getMonsterById(npcId);
+        let items : ItemDrop[] = [];
 
         for (const item of droppedItems){
             let fetchedItem = await this._itemService.getItemById(item.id)
+
             if(fetchedItem){
-                let droppedItem : IItemDrop = <IItemDrop>{
-                    quantity: item.quantity,
-                    item: fetchedItem
-                }
+                let droppedItem : ItemDrop = new ItemDrop();
+                droppedItem.quantity =  item.quantity
+                droppedItem.kill = kill
+                droppedItem.item = fetchedItem;
+
                 items.push(droppedItem);
             }
         }
 
-        let npcKill : INpcKill = <INpcKill>{
-            id: 1,
-            killValue: killValue,
-            items: items,
-            npc: npc,
-            player: player,
-        }
+        // let npcKill : INpcKill = <INpcKill>{
+        //     id: 1,
+        //     killValue: killValue,
+        //     items: items,
+        //     npc: npc,
+        //     player: player,
+        // }
 
-        console.log(npcKill)
-        return this._playerRepo.createNpcKill(npcKill, player);
+        // console.log(npcKill)
+        // return this._playerRepo.createNpcKill(npcKill, player);
     }
 
     async getLevelsForPlayer(player: IPlayer){

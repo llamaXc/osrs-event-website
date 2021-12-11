@@ -1,6 +1,6 @@
-import { IMonster } from "../../state/database";
+import { Monster } from "../../entity/Monster";
 
 export interface IMonsterRepository{
-    saveMonster(monster: IMonster): Promise<boolean>
-    getMonsterById(id: number): Promise<IMonster|undefined>
+    saveMonster(monster: Monster): Promise<boolean>
+    getMonsterById(id: number): Promise<Monster|undefined>
 }
