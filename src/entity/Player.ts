@@ -22,29 +22,29 @@ export class Player extends BaseEntity{
     @Column()
     combatLevel: number
 
-    @OneToOne(() => Position, p => p.player, {cascade: true, lazy: true})
+    @OneToOne(() => Position, p => p.player, {cascade: true})
     @JoinColumn()
     position!: Position;
 
-    @OneToOne(() => Inventory, {eager: true, cascade: true})
+    @OneToOne(() => Inventory, {cascade: true})
     @JoinColumn()
     inventory: Inventory
 
-    @OneToOne(() => Equipment, {eager: true, cascade: true})
+    @OneToOne(() => Equipment, {cascade: true})
     @JoinColumn()
     equipment: Equipment
 
-    @OneToOne(() => Bank, {eager: true, cascade: true})
+    @OneToOne(() => Bank, {cascade: true})
     @JoinColumn()
     bank: Bank
 
-    @OneToMany(() => NpcKill, k => k.player, {eager: true, cascade: true})
+    @OneToMany(() => NpcKill, k => k.player, {cascade: true})
     kills: NpcKill[]
 
-    @OneToMany(() => Level, l => l.player, {eager: true, cascade: true})
+    @OneToMany(() => Level, l => l.player, {cascade: true})
     levels: Level[]
 
-    @OneToMany(() => Quest, q => q.player, {eager: true, cascade: true})
+    @OneToMany(() => Quest, q => q.player, {cascade: true})
     quests: Quest[]
 
     @Column({default: 0})

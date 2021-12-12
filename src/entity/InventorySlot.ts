@@ -18,6 +18,6 @@ export class InventorySlot extends BaseEntity{
     @Column()
     quantity: number
 
-    @ManyToOne(type => Inventory, i => i.slots)
-    inventory!: Inventory
+    @ManyToOne(() => Inventory, i => i.slots, {lazy: true})
+    inventory: Inventory
 }

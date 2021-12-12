@@ -118,11 +118,6 @@ describe('Player service', () => {
         }
     })
 
-    it('can get npc kill for a player', async () => {
-        const kills = await playerService.getNpcKills(playerIron69M);
-        expect(kills).not.to.equal(undefined)
-    })
-
     it('can update supplement info', async () => {
         const updated = await playerService.updateSupplementInformation(playerIron69M, 121, "Zezima", 15, 20, 1);
         expect(updated.position.x).to.equal(15);

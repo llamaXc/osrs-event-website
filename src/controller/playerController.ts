@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { Player } from '../entity/Player';
 import { IBasicItemDropped } from '../state/old_ts';
 import { Quest } from '../entity/Quest';
+import { playerService } from '../service/Services';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -255,11 +256,8 @@ export class PlayerController{
         const responseMap : any = {};
 
         if(player){
-            responseMap['questPoints'] = player.questPoints;
-            responseMap['levels'] = player.levels;
-            responseMap['kills'] = player.kills;
-            responseMap['invontory'] = player.inventory.slots
-            return res.json(responseMap);
+            const serverResponse = await playerService.getPlayerDataById(1);
+            return res.json(serverResponse);
         }
         return res.status(404);
     }

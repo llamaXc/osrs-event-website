@@ -24,10 +24,6 @@ export class PlayerService{
             console.log("PlayerService initalized succesfully");
         }
 
-    async getNpcKills(player: Player): Promise<NpcKill[]>{
-        return await this._playerRepo.getNpcKillsForPlayer(player);
-    }
-
     async updateQuestData(player: Player, quests: Quest[], qp: number){
         return await this._playerRepo.updateQuestData(player, quests, qp);
     }
@@ -65,9 +61,6 @@ export class PlayerService{
         return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
     }
 
-    async getPosition(player: Player){
-        return await this._playerRepo.getPosition(player);
-    }
 
     async getPlayerById(playerId: number){
         return await this._playerRepo.getPlayerById(playerId);
@@ -80,10 +73,6 @@ export class PlayerService{
         }else{
             throw new Error("Cant find player")
         }
-    }
-
-    async getInventory(player: Player){
-        return await this._playerRepo.getPlayerInventory(player)
     }
 
     async updateEquippiedItems(mapOfSlottedItems: Map<string, IBasicItemDropped>, player: Player){
@@ -183,7 +172,7 @@ export class PlayerService{
         for (const key of keys){
             const levelToAdd: Level = {
                 name: key,
-                level: 1,
+                level: levelsMap.get(key),
             } as Level;
 
             levels.push(levelToAdd);
@@ -195,7 +184,7 @@ export class PlayerService{
     async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: Player){
         const bankSlots: BankSlot[] = []
         let slotIndex = 0;
-        console.log("Service === TIME TO UPDATE BANK ITEMS ")
+        console.log("Service === TIME TO UPDATE BANK ITEMS. BankArray passed in " + JSON.stringify(bankItems, null, 2))
 
         for(const basicItemInfo of bankItems){
 
@@ -205,9 +194,15 @@ export class PlayerService{
                     const slot = new BankSlot();
                     slot.quantity = basicItemInfo.quantity
                     slot.slotIndex = slotIndex;
+                    slot.item = item;
                     bankSlots.push(slot);
+                    console.log("Creating bank slot for item id: " + item.id)
+                }else{
+                    console.log("Item is invalid: " + JSON.stringify(item, null, 2))
                 }
                 slotIndex++;
+            }else{
+                console.log("Basic item in bank items is empty? Uh Oh: " + JSON.stringify(basicItemInfo))
             }
         }
 
@@ -216,6 +211,13 @@ export class PlayerService{
         } as Bank;
 
         console.log("Service got request to update bank now")
+        console.log("Bank slots being passed to repo: " + JSON.stringify(bank, null, 2))
         return await this._playerRepo.updateBank(player, bank)
+    }
+
+
+    async getPlayerDataById(playerId: number){
+        let wholePlayer =  await Player.findOne(1, {relations: ['kills', 'levels', 'bank']});
+        return {kills: wholePlayer?.kills, levels: wholePlayer?.levels, bank: wholePlayer?.bank}
     }
 }

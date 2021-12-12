@@ -1,4 +1,4 @@
-import {Entity, Column, BaseEntity, PrimaryColumn, ManyToOne, JoinTable, PrimaryGeneratedColumn, OneToOne} from "typeorm";
+import {Entity, Column, BaseEntity, PrimaryColumn, ManyToOne, JoinTable, PrimaryGeneratedColumn, OneToOne, Index} from "typeorm";
 import { Bank } from "./Bank";
 import { Item } from "./Item";
 
@@ -8,7 +8,7 @@ export class BankSlot extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Item, {eager: true})
+    @ManyToOne(() => Item, {lazy: true})
     @JoinTable()
     item: Item
 

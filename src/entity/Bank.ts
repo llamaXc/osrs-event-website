@@ -1,7 +1,5 @@
-import {Entity, BaseEntity, PrimaryGeneratedColumn, OneToOne, OneToMany} from "typeorm";
+import {Entity, BaseEntity, PrimaryGeneratedColumn, OneToOne, OneToMany, RelationId, Index} from "typeorm";
 import { BankSlot } from "./BankSlot";
-import { EquipmentSlot } from "./EquipmentSlot";
-import { Player } from "./Player";
 
 @Entity()
 export class Bank extends BaseEntity{

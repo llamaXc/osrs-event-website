@@ -13,7 +13,7 @@ export class Quest extends BaseEntity{
     @Column()
     state: string;
 
-    @ManyToOne(() => Player, player => player.levels)
+    @ManyToOne(() => Player, player => player.quests)
     player: Player
 
 }

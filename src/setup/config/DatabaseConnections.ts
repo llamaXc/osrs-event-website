@@ -10,9 +10,10 @@ export const sqlite3InMemory : ConnectionOptions= {
 }
 
 export const sqlite3File : ConnectionOptions= {
-    type: "sqlite",
+    type: "better-sqlite3",
     database: "data/sqlite3/sqlite3file.sqlite",
+    migrations: ["src/migrations/**/*.ts"],
     entities: ["bin/entity/*.{ts,js}"],
-    synchronize: true,
-    logging: true
+    synchronize: false,
+    logging: false
 }

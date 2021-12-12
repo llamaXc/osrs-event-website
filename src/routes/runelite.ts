@@ -29,11 +29,7 @@ router.post('/quest_change', async (req,res) => {
 })
 
 router.post('/bank', async (req, res) => {
-    console.log("TIME TO UPDATE BANK!")
     playerController.updateBank(req, res);
 })
-
-
-
 
 export default router;
