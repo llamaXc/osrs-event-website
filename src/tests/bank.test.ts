@@ -7,7 +7,7 @@ import { EquipmentSlot } from '../entity/EquipmentSlot';
 import { Item } from '../entity/Item';
 import { Level } from '../entity/Level';
 import { Player } from '../entity/Player';
-import { playerService } from '../service/Services';
+import { playerService } from '../service';
 
 describe('Bank Test', () => {
 

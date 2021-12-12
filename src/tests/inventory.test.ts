@@ -6,7 +6,7 @@ import { Item } from '../entity/Item';
 import { ItemDrop } from '../entity/ItemDrop';
 import { Player } from '../entity/Player';
 import { Position } from '../entity/Position';
-import { itemService, playerService } from '../service/Services';
+import { itemService, playerService } from '../service';
 
 describe('Inventory Test', () => {
 

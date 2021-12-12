@@ -2,7 +2,6 @@ import { ItemDrop } from '../entity/ItemDrop';
 import { NpcKill } from '../entity/NpcKill';
 import { Player } from '../entity/Player';
 import { IPlayerRepository } from '../repository/interfaces/IPlayerRepository'
-import { IBasicItemDropped } from '../state/old_ts';
 import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
 import {v4 as uuidv4} from 'uuid';
@@ -11,26 +10,24 @@ import { InventorySlot } from '../entity/InventorySlot';
 import { Inventory } from '../entity/Inventory';
 import { Level } from '../entity/Level';
 import { Equipment } from '../entity/Equipment';
-import { itemService } from './Services';
+
+import { itemService } from '.';
+
 import { EquipmentSlot } from '../entity/EquipmentSlot';
 import { Bank } from '../entity/Bank';
 import { BankSlot } from '../entity/BankSlot';
 import { Quest } from '../entity/Quest';
+import { APIItemDropInformation } from './ModelInterfaces/ApiDataTypes';
+import { IPlayerService } from './interfaces/IPlayerService';
 
-export class PlayerService{
+export class PlayerService implements IPlayerService{
     constructor(private readonly _playerRepo: IPlayerRepository,
         private readonly _monsterService: MonsterService,
-        private readonly _itemService: ItemService){
-            console.log("PlayerService initalized succesfully");
-        }
+        private readonly _itemService: ItemService){}
 
     async updateQuestData(player: Player, quests: Quest[], qp: number){
         return await this._playerRepo.updateQuestData(player, quests, qp);
     }
-
-    // async getQuestListForPlayer(player: IPlayer){
-    //     return await this._playerRepo.getQuestListForPlayer(player);
-    // }
 
     async doesPlayerExist(playerToken: string){
         return await this._playerRepo.getPlayerByToken(playerToken) !== undefined;
@@ -57,6 +54,7 @@ export class PlayerService{
             z: plane
         } as Position
 
+        console.log("Updating supplement information in service");
         const updatedPlayer = await this._playerRepo.updatePosition(player, pos);
         return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
     }
@@ -66,16 +64,14 @@ export class PlayerService{
         return await this._playerRepo.getPlayerById(playerId);
     }
 
-    async getPlayerByHash(playerToken: string): Promise<Player>{
-        const player = await this._playerRepo.getPlayerByToken(playerToken);
-        if(player){
-            return player;
-        }else{
-            throw new Error("Cant find player")
-        }
+    async getPlayerByHash(playerToken: string): Promise<Player|undefined>{
+        console.log("Finding player by hash in service: " + playerToken);
+        const p = await this._playerRepo.getPlayerByToken(playerToken);
+        console.log("Done filtering for player")
+        return p;
     }
 
-    async updateEquippiedItems(mapOfSlottedItems: Map<string, IBasicItemDropped>, player: Player){
+    async updateEquippiedItems(mapOfSlottedItems: Map<string, APIItemDropInformation>, player: Player){
         const keys = Array.from(mapOfSlottedItems.keys());
         const slots : EquipmentSlot[] = [];
 
@@ -103,7 +99,7 @@ export class PlayerService{
         await this._playerRepo.updateEquipment(equipment, player)
     }
 
-    async updateInventoryItems(basicItems: IBasicItemDropped[], player: Player, value: number){
+    async updateInventoryItems(basicItems: APIItemDropInformation[], player: Player, value: number){
         const slots : InventorySlot[] = []
 
         let slotIndex = 0;
@@ -128,10 +124,10 @@ export class PlayerService{
         const inventory = new Inventory();
         inventory.slots = slots;
 
-        return await this._playerRepo.updateInventory(player, inventory);
+        await this._playerRepo.updateInventory(player, inventory);
     }
 
-    async createNpcKill(npcId: number, droppedItems: IBasicItemDropped[], killValue: number, player: Player){
+    async createNpcKill(npcId: number, droppedItems: APIItemDropInformation[], killValue: number, player: Player): Promise<NpcKill|undefined>{
         const kill : NpcKill = new NpcKill();
         kill.killValue = killValue;
 
@@ -161,10 +157,6 @@ export class PlayerService{
 
     }
 
-    // async getLevelsForPlayer(player: IPlayer){
-    //     return await this._playerRepo.getPlayerLevels(player);
-    // }
-
     async updateLevels(player: Player, levelsMap: Map<string, number>, totalLevel: number){
         const levels : Level[] = [];
 
@@ -181,10 +173,9 @@ export class PlayerService{
         return await this._playerRepo.updateLevelData(levels, totalLevel, player)
     }
 
-    async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: Player){
+    async updateBankItems(bankItems: APIItemDropInformation[], value: number, player: Player){
         const bankSlots: BankSlot[] = []
         let slotIndex = 0;
-        console.log("Service === TIME TO UPDATE BANK ITEMS. BankArray passed in " + JSON.stringify(bankItems, null, 2))
 
         for(const basicItemInfo of bankItems){
 
@@ -210,14 +201,12 @@ export class PlayerService{
             slots: bankSlots
         } as Bank;
 
-        console.log("Service got request to update bank now")
-        console.log("Bank slots being passed to repo: " + JSON.stringify(bank, null, 2))
         return await this._playerRepo.updateBank(player, bank)
     }
 
 
     async getPlayerDataById(playerId: number){
-        let wholePlayer =  await Player.findOne(1, {relations: ['kills', 'levels', 'bank']});
+        const wholePlayer =  await Player.findOne(1, {relations: ['kills', 'levels', 'bank']});
         return {kills: wholePlayer?.kills, levels: wholePlayer?.levels, bank: wholePlayer?.bank}
     }
 }

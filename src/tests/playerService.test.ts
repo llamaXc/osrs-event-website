@@ -1,10 +1,10 @@
 import { Item } from "../entity/Item";
 import { Monster } from "../entity/Monster";
 import { Player } from "../entity/Player";
-import { itemService, monsterService, playerService } from "../service/Services";
-import { IBasicItemDropped } from "../state/old_ts";
+import { itemService, monsterService, playerService } from "../service";
 import {expect} from 'chai';
 import {inMemeory} from "../state/Database"
+import { APIItemDropInformation } from "../service/ModelInterfaces/ApiDataTypes";
 
 before(async () => {
     await inMemeory.initalize()
@@ -73,7 +73,7 @@ describe('Player service', () => {
     });
 
     it('can record a npc kill for a player', async () => {
-        const items: IBasicItemDropped[] = [
+        const items: APIItemDropInformation[] = [
             { id: dragonScimItem.id, quantity: 4 },
             { id: dragonBonesItem.id, quantity: 1 }
         ]
@@ -104,7 +104,7 @@ describe('Player service', () => {
     })
 
     it ('can throw error on invalid item drop', async () => {
-        const items: IBasicItemDropped[] = [
+        const items: APIItemDropInformation[] = [
             { id: 99999999, quantity: 4 },
         ]
 

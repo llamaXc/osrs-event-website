@@ -1,8 +1,7 @@
 import {expect} from 'chai';
-import { createLanguageServiceSourceFile } from 'typescript';
 import { Level } from '../entity/Level';
 import { Player } from '../entity/Player';
-import { playerService } from '../service/Services';
+import { playerService } from '../service';
 
 describe('Levels Test', () => {
 

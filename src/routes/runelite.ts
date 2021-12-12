@@ -1,35 +1,22 @@
-import express from 'express';
+import express, { Router } from 'express';
+const router : Router = express.Router();
 
-import {playerController} from "../controller/Controllers"
+import {playerController} from "../controller"
 
-const router = express.Router();
+const controller = playerController;
 
-router.post('/npc_kill', (req, res) => {
-    playerController.saveNpcLoot(req, res)
-})
+router.get('/', controller.test.bind(controller))
 
-router.get('/', (req,res) => {
-    playerController.getAllTest(req, res);
-})
+router.post('/npc_kill',  controller.saveNpcLoot.bind(controller))
 
-router.post('/inventory_items',(req, res) => {
-    playerController.updateInventoryItems(req, res);
-})
+router.post('/inventory_items', controller.updateInventoryItems.bind(controller))
 
-router.post('/equipped_items', async (req,res) => {
-    playerController.updateEquippedItems(req, res);
-})
+router.post('/equipped_items', controller.updateEquippedItems.bind(controller))
 
-router.post('/level_change', async (req,res) => {
-    playerController.updateLevels(req, res);
-})
+router.post('/level_change', controller.updateLevels.bind(controller))
 
-router.post('/quest_change', async (req,res) => {
-    playerController.updateQuests(req, res);
-})
+router.post('/quest_change', controller.updateQuests.bind(controller))
 
-router.post('/bank', async (req, res) => {
-    playerController.updateBank(req, res);
-})
+router.post('/bank', controller.updateBank.bind(controller))
 
-export default router;
+export = router;

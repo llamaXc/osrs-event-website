@@ -88,6 +88,8 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         .leftJoinAndSelect("player.position", "position")
         .where("player_id = :id", {id: player.id}).getOne();
 
+        console.log("Repo: Position update: " + JSON.stringify(coords, null, 2))
+
         if(!playerWithPosition || (playerWithPosition.position === undefined || playerWithPosition.position === null)){
             player.position = coords;
             return await Player.save(player)
@@ -184,6 +186,5 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
              return await Player.save(player);
         }
     }
-
 }
 
