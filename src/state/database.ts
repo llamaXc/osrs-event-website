@@ -26,4 +26,3 @@ class Database implements IDatabase{
 
 export const inMemeory: Database = new Database(sqlite3InMemory);
 export const sqlite3: Database   = new Database(sqlite3File);
-

@@ -57,8 +57,8 @@ export class PlayerService implements IPlayerService{
         } as Position
 
         console.log("Updating supplement information in service");
-        // const updatedPlayer = await this._playerRepo.updatePosition(player, pos);
-        // return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
+        const updatedPlayer = await this._playerRepo.updatePosition(player, pos);
+        return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
         return player;
     }
 
@@ -207,11 +207,9 @@ export class PlayerService implements IPlayerService{
 
     async getPlayerDataById(playerId: number){
         const start = Date.now();
-
-        const wholePlayer =  await Player.findOne(1, {relations: ['kills', 'levels', 'equipment', 'quests', 'bank']});
+        const wholePlayer =  await Player.findOne(1, {relations: ['quests', 'kills', 'inventory', 'equipment']});
         const end = Date.now();
         const executionTime = end - start;
-
-        return {runTime: executionTime, kills: wholePlayer?.kills, levels: wholePlayer?.levels, bank: wholePlayer?.bank}
+        return {runTime: executionTime, quests: wholePlayer?.quests, kills: wholePlayer?.kills, levels: wholePlayer?.levels, bank: wholePlayer?.bank}
     }
 }

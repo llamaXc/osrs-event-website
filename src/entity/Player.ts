@@ -52,8 +52,6 @@ export class Player extends BaseEntity{
 
     @Column({default: 0})
     totalLevel: number
-
-
 }
 
 

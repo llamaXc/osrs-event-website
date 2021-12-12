@@ -35,14 +35,14 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
 
     async getPlayerByToken(playerToken: string): Promise<Player|undefined>{
         try{
-            return await Player.createQueryBuilder("player").where("player_token = :token", {token: playerToken }).getOne();
+            return await Player.createQueryBuilder("player").where("player.token = :token", {token: playerToken }).getOne();
         }catch(err){
             return undefined
         }
     }
 
     async getPlayerById(id: number): Promise<Player|undefined>{
-        return await Player.createQueryBuilder("player").where("player_id = :id", {id }).getOne()
+        return await Player.createQueryBuilder("player").where("player.id = :id", { id }).getOne()
     }
 
     async updateBank(player: Player, bank: Bank): Promise<Player>{
