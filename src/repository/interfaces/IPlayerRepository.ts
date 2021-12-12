@@ -1,4 +1,7 @@
+import { Equipment } from "../../entity/Equipment";
+import { Inventory } from "../../entity/Inventory";
 import { ItemDrop } from "../../entity/ItemDrop";
+import { Level } from "../../entity/Level";
 import { Monster } from "../../entity/Monster";
 import { NpcKill } from "../../entity/NpcKill";
 import { Player } from "../../entity/Player";
@@ -20,10 +23,13 @@ export interface IPlayerRepository{
 
     getPlayerByToken(token: string): Promise<Player|undefined>
     getPlayerById(id: number): Promise<Player|undefined>
-    // getPlayerInventory(player: IPlayer): Promise<IInventory|undefined>
-    // updatePlayerInventory(player: IPlayer, invo: IInventory): Promise<boolean>
+    getPlayerInventory(player: Player): Promise<Inventory|undefined>
+
+
+    updateInventory(player: Player, invo: Inventory): Promise<Player>
+
     // getPlayerEquippedItems(player: IPlayer): Promise<IEquippedItems|undefined>
-    // updatePlayerEquippedItems(equippedItem: IEquippedItems, player: IPlayer): Promise<boolean>
-    // updatePlayerLevels(levels: ILevels, player: IPlayer): Promise<boolean>
-    // getPlayerLevels(player: IPlayer): Promise<ILevels|undefined>
+
+    updateEquipment(equipment: Equipment, player: Player): Promise<Player>
+    updateLevelData(levels: Level[], questPoints: number, player: Player): Promise<Player>
 }

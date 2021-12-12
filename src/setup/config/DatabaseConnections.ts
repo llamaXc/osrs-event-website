@@ -6,7 +6,7 @@ export const sqlite3InMemory : ConnectionOptions= {
     dropSchema: true,
     entities: ["src/entity/*.{ts,js}"],
     synchronize: true,
-    logging: false
+    logging: true
 }
 
 export const sqlite3File : ConnectionOptions= {

@@ -1,6 +1,7 @@
 import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
 import { Player } from '../entity/Player';
+import { IBasicItemDropped } from '../state/old_ts';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -88,18 +89,18 @@ export class PlayerController{
     // }
 
 
-    // async updateLevels(req: Request, res: Response){
-    //     let data = req.body.data;
-    //     let player = await this.getPlayerFromHeader(req);
+    async updateLevels(req: Request, res: Response){
+        const data = req.body.data;
+        const {player} = await this.getPlayerFromHeader(req);
 
-    //     if(player){
-    //         let lvlMap = new Map<string, number>(Object.entries(data['levels']))
-    //         let totalLvl = data['totalLevel']
-    //         await this._playerService.updatePlayerLevels(player, lvlMap, totalLvl);
-    //     }
+        if(player){
+            const lvlMap = new Map<string, number>(Object.entries(data['levels']))
+            const totalLvl = data['totalLevel']
+            await this._playerService.updateLevels(player, lvlMap, totalLvl);
+        }
 
-    //     res.send("Done")
-    // }
+        res.send("Done")
+    }
 
     // async updateBank(req: Request, res: Response){
     //     let player = await this.getPlayerFromHeader(req);
@@ -182,46 +183,41 @@ export class PlayerController{
     //     return res.json({msg: "No levels items found"}).status(404)
     // }
 
-    // async updateInventoryItems(req: Request, res: Response){
-    //     let data = req.body.data;
+    async updateInventoryItems(req: Request, res: Response){
+        const data = req.body.data;
 
-    //     let player = await this.getPlayerFromHeader(req);
-    //     let value = data['gePrice']
-    //     if(player){
-    //         await this._playerService.updateInventoryItems(data['inventory'], player, value)
-    //     }
+        const {player, playerHash} = await this.getPlayerFromHeader(req);
+        const value = data['gePrice']
 
-    //     res.send("Done")
-    // }
+        console.log(">Updating inventory<")
+        console.log(JSON.stringify(player, null, 2));
 
-    // async updateEquippedItems(req: Request, res: Response){
-    //     let player = await this.getPlayerFromHeader(req);
-    //     if (player){
-    //         let data = req.body.data
+        if(player){
+            await this._playerService.updateInventoryItems(data['inventory'], player, value)
+        }
 
-    //         let map = new Map<string, IBasicItemDropped>(Object.entries(data['equippedItems']));
-    //         let mapOfSlots: Map<string, IBasicItemDropped> = new Map()
+        res.send("Done")
+    }
 
-    //         for (let k of Array.from(map.keys())){
-    //             let item = map.get(k);
-    //             if(item != null){
-    //                 mapOfSlots.set(k, item)
-    //             }
-    //         }
+    async updateEquippedItems(req: Request, res: Response){
+        const {player} = await this.getPlayerFromHeader(req);
+        if (player){
+            const data = req.body.data
 
-    //         await this._playerService.updateEquippiedItems(mapOfSlots, player)
-    //     }
-    //     res.send("Done")
-    // }
+            const map = new Map<string, IBasicItemDropped>(Object.entries(data['equippedItems']));
+            const mapOfSlots: Map<string, IBasicItemDropped> = new Map()
 
-    // async getEquippedItemsTest(req: Request, res: Response){
-    //     let player = await this._playerService.getPlayerByHash('a5345127-b33d-4565-a530-2ffe0970fac6');
-    //     if (player){
-    //         let equip =  await this._playerService.getEquippedItemsByForPlayer(player);
-    //         return res.json(equip).status(200)
-    //     }
-    //     return res.json({msg: "No equipped items found"}).status(404)
-    // }
+            for (const k of Array.from(map.keys())){
+                const item = map.get(k);
+                if(item != null){
+                    mapOfSlots.set(k, item)
+                }
+            }
+
+            await this._playerService.updateEquippiedItems(mapOfSlots, player)
+        }
+        res.send("Done")
+    }
 
     async saveNpcLoot(req : Request, res: Response){
         const data = req.body.data
@@ -240,10 +236,17 @@ export class PlayerController{
         res.send("Done")
     }
 
-    async getNpcKillsTest(req : Request, res: Response){
+    async getAllTest(req : Request, res: Response){
         const player = await this._playerService.getPlayerById(1);
+
+        const responseMap : any = {};
+
         if(player){
-            return res.send(await this._playerService.getNpcKills(player))
+            responseMap['questPoints'] = player.questPoints;
+            responseMap['levels'] = player.levels;
+            responseMap['kills'] = player.kills;
+            responseMap['invontory'] = player.inventory.slots
+            return res.json(responseMap);
         }
         return res.status(404);
     }

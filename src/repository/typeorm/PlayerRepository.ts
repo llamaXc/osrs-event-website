@@ -1,4 +1,7 @@
+import { Equipment } from "../../entity/Equipment";
+import { Inventory } from "../../entity/Inventory";
 import { ItemDrop } from "../../entity/ItemDrop";
+import { Level } from "../../entity/Level";
 import { Monster } from "../../entity/Monster";
 import { NpcKill } from "../../entity/NpcKill";
 import { Player } from "../../entity/Player";
@@ -10,17 +13,19 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
     async createNpcKill(npcKill: NpcKill, droppedItems: ItemDrop[], npc: Monster, player: Player): Promise<NpcKill|undefined>{
         console.log("Creating NPC Kill");
 
-        npcKill.player = player;
+        console.log("=========== Player to save kill onto: ==========\n" + JSON.stringify(player, null, 2));
+
         npcKill.monster = npc;
-        // await NpcKill.save(npcKill);
-
-        // for(const item of droppedItems){
-        //     item.kill = npcKill;
-        //     await ItemDrop.save(item);
-        // }
         npcKill.items = droppedItems;
+        if(player.kills === undefined || player.kills === null){
+            player.kills = [npcKill];
+        }else{
+            player.kills.push(npcKill);
+        }
 
-        return await NpcKill.save(npcKill);
+        await Player.save(player);
+
+        return npcKill;
     }
 
     async getPlayerByToken(playerToken: string): Promise<Player|undefined>{
@@ -58,10 +63,16 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
     }
 
     async updatePosition(player: Player, coords: Position): Promise<Player>{
-        if(player.position === undefined){
+        console.log("Latest position: " + JSON.stringify(coords, null, 2))
+        console.log("Players current position: "+ JSON.stringify(player.position, null, 2));
+
+
+        if(player.position === undefined || player.position === null){
+            console.log("No position exists, making one")
             player.position = coords;
             return await Player.save(player)
         }else{
+            console.log("Updating position")
             player.position.x = coords.x;
             player.position.y = coords.y;
             player.position.z = coords.z;
@@ -87,34 +98,32 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
     //     return await this._db.getPlayerById(id);
     // }
 
-    // async getPlayerInventory(player: IPlayer): Promise<IInventory|undefined>{
-    //     return await this._db.getInventoryByPlayerId(player.id)
-    // }
+    async getPlayerInventory(player: Player): Promise<Inventory|undefined>{
+        return player.inventory;
+    }
 
-    // async updatePlayerInventory(player: IPlayer, invo: IInventory): Promise<boolean>{
-    //     if (await this._db.getInventoryByPlayerId(player.id) === null){
-    //         invo.time_created = Math.floor(Date.now() / 1000)
-    //     }
-    //     await this._db.updateInventoryByPlayerId(player.id, invo)
-    //     return true;
-    // }
+    async updateInventory(player: Player, invo: Inventory): Promise<Player>{
+        console.log("Goal: Update inventory to=>\n" + JSON.stringify(invo, null, 2));
+        player.inventory = invo;
+        return await Player.save(player);
+
+    }
 
     // async getPlayerEquippedItems(player: IPlayer): Promise<IEquippedItems|undefined>{
     //     return await this._db.getEquippedItemsByPlayerId(player.id)
     // }
 
-    // async updatePlayerEquippedItems(equippedItem: IEquippedItems, player: IPlayer): Promise<boolean>{
-    //     await this._db.updateEquippedItemByPlayerId(player.id, equippedItem)
-    //     return true;
-    // }
+    async updateEquipment(equipment: Equipment, player: Player): Promise<Player> {
+        console.log("Seeking to update armou: \n" + JSON.stringify(equipment, null, 2))
+        player.equipment = equipment;
+        return await Player.save(player);
+    }
 
-    // async updatePlayerLevels(levels: ILevels, player: IPlayer): Promise<boolean>{
-    //     await this._db.updateLevelsByPlayerId(player.id, levels)
-    //     return true;
-    // }
+    async updateLevelData(levels: Level[], questPoints: number, player: Player): Promise<Player>{
+        player.levels = levels;
+        player.questPoints = questPoints;
+        return await Player.save(player);
+    }
 
-    // async getPlayerLevels(player: IPlayer): Promise<ILevels|undefined>{
-    //     return await this._db.getLevelsByPlayerId(player.id);
-    // }
 }
 

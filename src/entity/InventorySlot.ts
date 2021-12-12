@@ -1,20 +1,23 @@
-import {Entity, Column, BaseEntity, PrimaryColumn, ManyToOne, JoinTable} from "typeorm";
+import {Entity, Column, BaseEntity, PrimaryColumn, ManyToOne, JoinTable, PrimaryGeneratedColumn} from "typeorm";
 import { Inventory } from "./Inventory";
-import { ItemDrop } from "./ItemDrop";
+import { Item } from "./Item";
 
 @Entity()
 export class InventorySlot extends BaseEntity{
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => ItemDrop, {eager: true})
+    @ManyToOne(() => Item, {eager: true})
     @JoinTable()
-    item: ItemDrop
+    item: Item
 
     @Column()
     slotIndex: number
 
+    @Column()
+    quantity: number
+
     @ManyToOne(type => Inventory, i => i.slots)
-    inventory: Inventory
+    inventory!: Inventory
 }

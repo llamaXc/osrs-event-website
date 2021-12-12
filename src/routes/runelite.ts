@@ -9,20 +9,20 @@ router.post('/npc_kill', (req, res) => {
 })
 
 router.get('/', (req,res) => {
-    playerController.getNpcKillsTest(req, res);
+    playerController.getAllTest(req, res);
 })
 
-// router.post('/inventory_items',(req, res) => {
-//     playerController.updateInventoryItems(req, res);
-// })
+router.post('/inventory_items',(req, res) => {
+    playerController.updateInventoryItems(req, res);
+})
 
-// router.post('/equipped_items', async (req,res) => {
-//     playerController.updateEquippedItems(req, res);
-// })
+router.post('/equipped_items', async (req,res) => {
+    playerController.updateEquippedItems(req, res);
+})
 
-// router.post('/level_change', async (req,res) => {
-//     playerController.updateLevels(req, res);
-// })
+router.post('/level_change', async (req,res) => {
+    playerController.updateLevels(req, res);
+})
 
 // router.post('/quest_change', async (req,res) => {
 //     playerController.updateQuests(req, res);

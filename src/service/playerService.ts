@@ -7,6 +7,12 @@ import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
 import {v4 as uuidv4} from 'uuid';
 import { Position } from '../entity/Position';
+import { InventorySlot } from '../entity/InventorySlot';
+import { Inventory } from '../entity/Inventory';
+import { Level } from '../entity/Level';
+import { Equipment } from '../entity/Equipment';
+import { itemService } from './Services';
+import { EquipmentSlot } from '../entity/EquipmentSlot';
 
 export class PlayerService{
     constructor(private readonly _playerRepo: IPlayerRepository,
@@ -73,9 +79,9 @@ export class PlayerService{
         }
     }
 
-    // async getInventory(player: IPlayer){
-    //     return await this._playerRepo.getPlayerInventory(player)
-    // }
+    async getInventory(player: Player){
+        return await this._playerRepo.getPlayerInventory(player)
+    }
 
     // async turnMappedEquipmentToSlot(item?: IBasicItemDropped){
     //     if(item){
@@ -90,62 +96,61 @@ export class PlayerService{
     //     return null;
     // }
 
-    // async getEquippedItemsByForPlayer(player: IPlayer){
-    //     return await this._playerRepo.getPlayerEquippedItems(player)
-    // }
+    async updateEquippiedItems(mapOfSlottedItems: Map<string, IBasicItemDropped>, player: Player){
+        const keys = Array.from(mapOfSlottedItems.keys());
+        const slots : EquipmentSlot[] = [];
 
-    // async updateEquippiedItems(mapOfSlottedItems: Map<string, IBasicItemDropped>, player: IPlayer){
-    //     let amulet = await  this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("AMULET"))
-    //     let legs = await  this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("LEGS"))
-    //     let boots = await  this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("BOOTS"))
-    //     let gloves = await this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("GLOVES"))
-    //     let chest =  await this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("BODY"))
-    //     let head =  await this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("HEAD"))
-    //     let weapon =  await this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("WEAPON"))
-    //     let cape =  await this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("CAPE"))
-    //     let ammo =  await this.turnMappedEquipmentToSlot(mapOfSlottedItems.get("AMMO"))
+        for(const key of keys){
+            const basicItemInfo = mapOfSlottedItems.get(key);
 
-    //     let equipped = <IEquippedItems>{
-    //         ammo: ammo,
-    //         cape: cape,
-    //         weapon: weapon,
-    //         head: head,
-    //         chest: chest,
-    //         gloves: gloves,
-    //         boots: boots,
-    //         legs: legs,
-    //         amulet: amulet
-    //     }
+            if(basicItemInfo){
+                const itemId = basicItemInfo.id;
+                const itemQuantity = basicItemInfo.quantity;
+                const fetchedItem = await itemService.getItemById(itemId);
 
-    //     this._playerRepo.updatePlayerEquippedItems(equipped, player)
-    // }
+                if(fetchedItem && itemId > 0){
+                    const slot = new EquipmentSlot();
+                    slot.slotName = key;
+                    slot.quantity = itemQuantity;
+                    slot.item = fetchedItem;
+                    slots.push(slot);
+                }
+            }
+        }
 
-    // async updateInventoryItems(basicItems: IBasicItemDropped[], player: IPlayer, value: number){
-    //     let items : IItemDrop[] = []
+        const equipment = new Equipment();
+        equipment.slots = slots;
 
-    //     for (const basicItemInfo of basicItems){
-    //         let fetchedItem = await this._itemService.getItemById(basicItemInfo.id)
-    //         if(fetchedItem){
-    //             let droppedItem : IItemDrop = <IItemDrop>{
-    //                 quantity: basicItemInfo.quantity,
-    //                 item: fetchedItem
-    //             }
-    //             if(basicItemInfo.id > 0){
-    //                 items.push(droppedItem);
-    //             }
-    //         }
-    //     }
+        await this._playerRepo.updateEquipment(equipment, player)
+    }
 
-    //     let current_unix_time = Math.floor(Date.now() / 1000)
-    //     let invo = <IInventory>{
-    //         value: value,
-    //         slots: items,
-    //         player: player,
-    //         time_updated: current_unix_time,
-    //     }
+    async updateInventoryItems(basicItems: IBasicItemDropped[], player: Player, value: number){
+        const slots : InventorySlot[] = []
 
-    //     return await this._playerRepo.updatePlayerInventory(player, invo);
-    // }
+        let slotIndex = 0;
+
+        for (const basicItemInfo of basicItems){
+            const fetchedItem = await this._itemService.getItemById(basicItemInfo.id)
+
+            if(fetchedItem){
+                const slotItem : InventorySlot = {
+                    quantity: basicItemInfo.quantity,
+                    item: fetchedItem,
+                    slotIndex
+                } as InventorySlot
+
+                if(slotItem.item.id > 0){
+                    slots.push(slotItem);
+                }
+            }
+            slotIndex++;
+        }
+
+        const inventory = new Inventory();
+        inventory.slots = slots;
+
+        return await this._playerRepo.updateInventory(player, inventory);
+    }
 
     async createNpcKill(npcId: number, droppedItems: IBasicItemDropped[], killValue: number, player: Player){
         const kill : NpcKill = new NpcKill();
@@ -181,28 +186,21 @@ export class PlayerService{
     //     return await this._playerRepo.getPlayerLevels(player);
     // }
 
-    // async updatePlayerLevels(player: IPlayer, levelsMap: Map<string, number>, totalLevel: number){
-    //     let levelsFormatted: ILevels = {
-    //         levels: new Map<string, ILevel>(),
-    //         total: totalLevel,
-    //     }
+    async updateLevels(player: Player, levelsMap: Map<string, number>, totalLevel: number){
+        const levels : Level[] = [];
 
-    //     let keys = Array.from(levelsMap.keys());
-    //     for (let key of keys){
-    //         let lvl: ILevel = {
-    //             name: key,
-    //             level: 1,
-    //             xp: 1
-    //         }
+        const keys = Array.from(levelsMap.keys());
+        for (const key of keys){
+            const levelToAdd: Level = {
+                name: key,
+                level: 1,
+            } as Level;
 
-    //         let levels = levelsFormatted.levels;
-    //         levels.set(key, lvl);
-    //         levelsFormatted.levels = levels;
+            levels.push(levelToAdd);
+        }
 
-    //     }
-
-    //     return await this._playerRepo.updatePlayerLevels(levelsFormatted, player)
-    // }
+        return await this._playerRepo.updateLevelData(levels, totalLevel, player)
+    }
 
     // async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: IPlayer){
     //     let bankSlotItems: IItem[] = []
