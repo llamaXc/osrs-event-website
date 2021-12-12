@@ -8,12 +8,16 @@ export class Quest extends BaseEntity{
     id: number;
 
     @Column()
+    questId: number
+
+    @Column()
     name: string;
 
     @Column()
     state: string;
 
     @ManyToOne(() => Player, player => player.quests)
+    @JoinColumn()
     player: Player
 
 }

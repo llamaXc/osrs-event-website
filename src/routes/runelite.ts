@@ -5,7 +5,7 @@ import {playerController} from "../controller"
 
 const controller = playerController;
 
-router.get('/', controller.test.bind(controller))
+router.get('/', controller.getAllTest.bind(controller))
 router.post('/npc_kill',  controller.saveNpcLoot.bind(controller))
 router.post('/inventory_items', controller.updateInventoryItems.bind(controller))
 router.post('/equipped_items', controller.updateEquippedItems.bind(controller))

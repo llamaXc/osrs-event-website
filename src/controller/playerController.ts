@@ -59,11 +59,11 @@ export class PlayerController{
                 const quest : any = questArray[i];
                 const state: string = quest['state']
                 const name: string = quest['name']
-                const id: number = quest['id']
+                const questId: number = quest['id']
 
                 const questToAdd = {
                     name,
-                    id,
+                    questId,
                     state
                 } as Quest
 
@@ -134,10 +134,4 @@ export class PlayerController{
         }
         return res.json({msg: "Player does not exist"}).status(404);
     }
-
-    async test(req: Request, res: Response){
-        console.log("Fetching test endponit")
-        return res.send(await this.playerService.getPlayerById(1)).status(200);
-    }
-
 }

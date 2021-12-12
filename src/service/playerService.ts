@@ -206,7 +206,12 @@ export class PlayerService implements IPlayerService{
 
 
     async getPlayerDataById(playerId: number){
-        const wholePlayer =  await Player.findOne(1, {relations: ['kills', 'levels', 'bank']});
-        return {kills: wholePlayer?.kills, levels: wholePlayer?.levels, bank: wholePlayer?.bank}
+        const start = Date.now();
+
+        const wholePlayer =  await Player.findOne(1, {relations: ['kills', 'levels', 'equipment', 'quests', 'bank']});
+        const end = Date.now();
+        const executionTime = end - start;
+
+        return {runTime: executionTime, kills: wholePlayer?.kills, levels: wholePlayer?.levels, bank: wholePlayer?.bank}
     }
 }

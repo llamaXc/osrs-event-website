@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "dev": "nodemon",
     "start": "tsc && node bin/app.js",
     "testfile": "mocha -r ts-node/register src/tests/**/${0}.test.ts",
     "testbash": "sh -c 'mocha -r ts-node/register src/tests/**/${0}.test.ts'",
@@ -36,6 +37,7 @@
     "@types/node": "^16.11.12",
     "@types/uuid": "^8.3.3",
     "chai": "^4.3.4",
+    "nodemon": "^2.0.15",
     "ts-node": "^10.4.0"
   }
 }
