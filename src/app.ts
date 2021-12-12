@@ -4,22 +4,23 @@ import "./setup/initalize"
 import { osrsAuthValidator } from "./middleware";
 import { osrsApiRoutes } from "./routes"
 
-import express, { Request, Response } from 'express';
+import morgan, { StreamOptions } from "morgan";
+
+
+import express from 'express';
 import cors from "cors"
+const morganMiddleware = morgan('tiny')
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(morganMiddleware)
 app.use(express.json());
 app.use(cors())
 
-app.use('/api', osrsAuthValidator, (req: Request, res: Response) => {
-    res.send("Succes")
-});
-
-app.use('/api-unauth', osrsApiRoutes)
-
+app.use('/api', osrsAuthValidator, osrsApiRoutes);
+app.use('/api-unauth', osrsApiRoutes);
 
 app.listen( port, () => {
-    console.log( `server started at http://localhost:${ port }` );
+    console.log( `\t> OSRSEvents backend started at http://localhost:${ port }` );
 } );

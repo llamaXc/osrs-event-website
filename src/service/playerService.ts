@@ -38,9 +38,11 @@ export class PlayerService implements IPlayerService{
             key = uuidv4()
         }
         try{
-            return await this._playerRepo.addNewPlayer({
+            const addedPlayer = await this._playerRepo.addNewPlayer({
                 username, token: key, combatLevel: 0
             } as Player)
+            console.log("Player added to database: " + addedPlayer.username + " " + addedPlayer.token)
+            return addedPlayer;
         }catch(err){
             console.error(err)
             throw  new Error("Error while saving player.")
@@ -55,8 +57,9 @@ export class PlayerService implements IPlayerService{
         } as Position
 
         console.log("Updating supplement information in service");
-        const updatedPlayer = await this._playerRepo.updatePosition(player, pos);
-        return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
+        // const updatedPlayer = await this._playerRepo.updatePosition(player, pos);
+        // return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
+        return player;
     }
 
 
@@ -65,10 +68,7 @@ export class PlayerService implements IPlayerService{
     }
 
     async getPlayerByHash(playerToken: string): Promise<Player|undefined>{
-        console.log("Finding player by hash in service: " + playerToken);
-        const p = await this._playerRepo.getPlayerByToken(playerToken);
-        console.log("Done filtering for player")
-        return p;
+        return await this._playerRepo.getPlayerByToken(playerToken);
     }
 
     async updateEquippiedItems(mapOfSlottedItems: Map<string, APIItemDropInformation>, player: Player){

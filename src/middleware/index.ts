@@ -2,7 +2,6 @@
 import { playerService } from "../service";
 import { AuthRuneliteMiddleware } from "./AuthRunelite";
 
-const service = playerService;
-const authService = new AuthRuneliteMiddleware(service);
+const authService = new AuthRuneliteMiddleware(playerService);
 
 export const osrsAuthValidator = authService.validateOsrs.bind(authService)

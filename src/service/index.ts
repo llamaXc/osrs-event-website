@@ -9,8 +9,7 @@ import { IPlayerRepository } from "../repository/interfaces/IPlayerRepository";
 import { IMonsterRepository } from "../repository/interfaces/IMonsterRepository";
 import { IItemIRepository } from "../repository/interfaces/IItemRepository";
 
-
-console.log("============= Sericves imported ===========")
+console.log("============= Services Created ===========")
 
 const playerRepo: IPlayerRepository   = new TypeOrmPlayerRepository();
 const monsterRepo: IMonsterRepository = new TypeOrmMonsterRepository();
@@ -21,5 +20,4 @@ export const itemService    = new ItemService(itemRepo);
 export const monsterService = new MonsterService(monsterRepo);
 
 export const playerService: IPlayerService  = new PlayerService(playerRepo, monsterService, itemService);
-console.log("============= Sericves end imported ===========")
 

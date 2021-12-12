@@ -7,13 +7,14 @@ export class PlayerController{
 
     constructor(private readonly playerService: IPlayerService){}
 
-    async getPlayerFromSession(res: Response){
-        return res.locals.player
+    getPlayerFromSession(res: Response){
+
+        return [res.locals.player, res.locals.playerHash]
     }
 
     async updateLevels(req: Request, res: Response){
         const data = req.body.data;
-        const {player} = await this.getPlayerFromSession(res);
+        const [player, playerHash] = this.getPlayerFromSession(res);
 
         if(player){
             const lvlMap = new Map<string, number>(Object.entries(data['levels']))
@@ -21,12 +22,12 @@ export class PlayerController{
             await this.playerService.updateLevels(player, lvlMap, totalLvl);
         }
 
-        res.status(200);
+        return res.json({msg: "Levels updated"}).status(200);
     }
 
     async updateBank(req: Request, res: Response){
 
-        const {player} = await this.getPlayerFromSession(res);
+        const [player, playerHash] = this.getPlayerFromSession(res);
         const data = req.body.data;
 
         if(player){
@@ -42,11 +43,11 @@ export class PlayerController{
             await this.playerService.updateBankItems(bankItems, value, player);
 
         }
-        return res.status(200);
+        return res.json({msg: "Bank updated"}).status(200);
     }
 
     async updateQuests(req: Request, res: Response){
-        const {player} = await this.getPlayerFromSession(res);
+        const [player, playerHash] = this.getPlayerFromSession(res);
         const data = req.body.data;
 
         const quests : Quest[] = []
@@ -72,27 +73,24 @@ export class PlayerController{
             const qp = data['qp']
 
             this.playerService.updateQuestData(player, quests, qp);
-            return res.status(200);
+            return res.json({msg: "Quests updated"}).status(200);
         }
 
-        return res.status(404);
+        return res.json({msg: "Player not found while updating quests"}).status(404);
     }
 
     async updateInventoryItems(req: Request, res: Response){
         const data = req.body.data;
 
-        const {player, playerHash} = await this.getPlayerFromSession(res);
+        const [player, playerHash] = this.getPlayerFromSession(res);
         const value = data['gePrice']
 
-        console.log(">Updating inventory<")
-        console.log(JSON.stringify(player, null, 2));
-
         await this.playerService.updateInventoryItems(data['inventory'], player, value)
-        return res.status(200);
+        return res.json({msg: "Inventory updated"}).status(200);
     }
 
     async updateEquippedItems(req: Request, res: Response){
-        const {player} = await this.getPlayerFromSession(res);
+        const [player, playerHash] = this.getPlayerFromSession(res);
         const data = req.body.data
 
         const map = new Map<SlotName, APIItemDropInformation>(Object.entries(data['equippedItems']));
@@ -106,7 +104,7 @@ export class PlayerController{
         }
 
         await this.playerService.updateEquippiedItems(mapOfSlots, player)
-        return res.status(200);
+        return res.json({msg: "Equipment updated"}).status(200);
     }
 
     async saveNpcLoot(req : Request, res: Response){
@@ -115,33 +113,31 @@ export class PlayerController{
         const droppedItems = data['items']
         const killValue = data['gePrice'];
 
-        const {playerHash, player} = await this.getPlayerFromSession(res);
+        const [player, playerHash] = this.getPlayerFromSession(res);
 
         if(player){
             await this.playerService.createNpcKill(npcId, droppedItems, killValue, player)
         }else{
             console.log("Failed to locate player with key: " + playerHash)
-            return res.status(404)
+            return res.json({msg: "Failed to add kill for player with hash: " + playerHash}).status(404);
         }
 
-        return res.status(200);
+        return res.json({msg: "Npc loot saved to player"}).status(200);
     }
 
     async getAllTest(req : Request, res: Response){
         const player = await this.playerService.getPlayerById(1);
 
-        const responseMap : any = {};
-
         if(player){
             const serverResponse = await this.playerService.getPlayerDataById(1);
             return res.json(serverResponse);
         }
-        return res.status(404);
+        return res.json({msg: "Player does not exist"}).status(404);
     }
 
     async test(req: Request, res: Response){
         console.log("Fetching test endponit")
-        return res.send(await this.playerService.getPlayerById(1));
+        return res.send(await this.playerService.getPlayerById(1)).status(200);
     }
 
 }

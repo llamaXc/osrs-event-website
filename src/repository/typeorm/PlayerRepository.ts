@@ -125,7 +125,6 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
 
             // Save and apply the updated inventory to our player.
             return await Player.save(playerWithInventory);
-
         }catch(err){
             // No inventory yet for this player, lets make and save one.
              const insertedInventory = await Inventory.save(invo)
