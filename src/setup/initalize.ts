@@ -9,7 +9,7 @@ db.initalize().then(async () => {
     console.log("========= Database initalized succesfully ===============");
 
     try{
-        const registered = await playerService.registerNewPlayer("Iron 69M", "1000");
+        const registered = await playerService.registerNewPlayer("Iron 69M", "11000");
         console.log("Created player")
     }catch(err){
         console.log("Error creating player");

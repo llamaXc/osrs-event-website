@@ -2,6 +2,7 @@ import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
 import { Player } from '../entity/Player';
 import { IBasicItemDropped } from '../state/old_ts';
+import { Quest } from '../entity/Quest';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -20,7 +21,9 @@ export class PlayerController{
             playerHash = authBearer.split(' ')[1]
         }
 
+        console.log("Checking if player exists")
         let doesExist = await this._playerService.doesPlayerExist(playerHash);
+        console.log("DOne checking if player exists. They do: " + doesExist)
 
         if(!doesExist){
             let username = "Zezima"
@@ -31,15 +34,18 @@ export class PlayerController{
             doesExist = true
         }
 
+        console.log("About to get player from hash: " + playerHash)
+
         let player : Player = await this._playerService.getPlayerByHash(playerHash);
+
+        console.log("ABout to start supp info")
 
         if(supplementInfo !== null && doesExist){
             const {combatLevel, position, username} = supplementInfo
             const {x, y, plane} = position;
-            const fetchedPlayer = await this._playerService.getPlayerByHash(playerHash);
 
             player = await this._playerService.updateSupplementInformation(
-                fetchedPlayer,
+                player,
                 combatLevel,
                 username,
                 x,
@@ -102,58 +108,65 @@ export class PlayerController{
         res.send("Done")
     }
 
-    // async updateBank(req: Request, res: Response){
-    //     let player = await this.getPlayerFromHeader(req);
-    //     let data = req.body.data;
-    //     if(player){
-    //         let {items, value} = data;
+    async updateBank(req: Request, res: Response){
+        console.log("Controller time to start update bank method");
 
-    //         let itemArray = Array.from(items);
-    //         let bankItems : IBasicItemDropped[] = []
-    //         for(const rawItemInfo of itemArray){
-    //             let bankBasicItemInfo: IBasicItemDropped = rawItemInfo as IBasicItemDropped;
-    //             bankItems.push(bankBasicItemInfo);
-    //         }
+        const {player} = await this.getPlayerFromHeader(req);
 
-    //         await this._playerService.updateBankItems(bankItems, value, player);
+        console.log("Got the player from the header")
 
-    //     }
-    //     return res.status(200);
-    // }
+        const data = req.body.data;
 
-    // async updateQuests(req: Request, res: Response){
-    //     let player = await this.getPlayerFromHeader(req);
-    //     let data = req.body.data;
+        console.log("CONTROLLER IS NOW HAS THE PLAYER");
+        if(player){
+            const {items, value} = data;
 
-    //     if(player){
-    //         let questArray = Array.from(data['quests'])
-    //         let questListEmpty: IQuest[] = []
-    //         let questListFormatted: IQuestList = {qp: 0, quests: questListEmpty}
+            const itemArray = Array.from(items);
+            const bankItems : IBasicItemDropped[] = []
+            for(const rawItemInfo of itemArray){
+                const bankBasicItemInfo: IBasicItemDropped = rawItemInfo as IBasicItemDropped;
+                bankItems.push(bankBasicItemInfo);
+            }
 
-    //         for (let i = 0; i < questArray.length; i++){
-    //             let quest : any = questArray[i];
-    //             let state: IQuestState = "FINISHED" as IQuestState
-    //             let name: string = quest['name']
-    //             let id: number = quest['id']
+            console.log(" PKM DEBUG UPDATE BANK " + bankItems.length + " " + player.username)
+            await this._playerService.updateBankItems(bankItems, value, player);
 
-    //             let formatted: IQuest = {
-    //                 name: name,
-    //                 id: id,
-    //                 state: state
-    //             }
+        }
+        return res.status(200);
+    }
 
-    //             questListFormatted.quests.push(formatted);
-    //         }
+    async updateQuests(req: Request, res: Response){
+        const {player} = await this.getPlayerFromHeader(req);
+        const data = req.body.data;
 
-    //         let qp = data['qp']
-    //         questListFormatted.qp = qp;
+        const quests : Quest[] = []
 
-    //         this._playerService.updateQuestList(player, questListFormatted);
-    //         return res.status(200);
-    //     }
+        if(player){
+            const questArray = Array.from(data['quests'])
 
-    //     return res.status(404);
-    // }
+            for (let i = 0; i < questArray.length; i++){
+                const quest : any = questArray[i];
+                const state: string = quest['state']
+                const name: string = quest['name']
+                const id: number = quest['id']
+
+                const questToAdd = {
+                    name,
+                    id,
+                    state
+                } as Quest
+
+                quests.push(questToAdd);
+            }
+
+            const qp = data['qp']
+
+            this._playerService.updateQuestData(player, quests, qp);
+            return res.status(200);
+        }
+
+        return res.status(404);
+    }
 
     // async getLevelsTest(req: Request, res: Response){
     //     let player = await this._playerService.getPlayerByHash('a5345127-b33d-4565-a530-2ffe0970fac6');

@@ -11,7 +11,4 @@ export class Equipment extends BaseEntity{
     @OneToMany(() => EquipmentSlot, slot => slot.equipment, {eager: true, cascade: true})
     slots: EquipmentSlot[]
 
-    @OneToOne(() => Player, p => p.equipment)
-    player: Player
-
 }

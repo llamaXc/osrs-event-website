@@ -13,6 +13,9 @@ import { Level } from '../entity/Level';
 import { Equipment } from '../entity/Equipment';
 import { itemService } from './Services';
 import { EquipmentSlot } from '../entity/EquipmentSlot';
+import { Bank } from '../entity/Bank';
+import { BankSlot } from '../entity/BankSlot';
+import { Quest } from '../entity/Quest';
 
 export class PlayerService{
     constructor(private readonly _playerRepo: IPlayerRepository,
@@ -25,9 +28,9 @@ export class PlayerService{
         return await this._playerRepo.getNpcKillsForPlayer(player);
     }
 
-    // async updateQuestList(player: IPlayer, questList: IQuestList){
-    //     return await this._playerRepo.updateQuestListForPlayer(player, questList);
-    // }
+    async updateQuestData(player: Player, quests: Quest[], qp: number){
+        return await this._playerRepo.updateQuestData(player, quests, qp);
+    }
 
     // async getQuestListForPlayer(player: IPlayer){
     //     return await this._playerRepo.getQuestListForPlayer(player);
@@ -82,19 +85,6 @@ export class PlayerService{
     async getInventory(player: Player){
         return await this._playerRepo.getPlayerInventory(player)
     }
-
-    // async turnMappedEquipmentToSlot(item?: IBasicItemDropped){
-    //     if(item){
-    //         let fetchedItem = await this._itemService.getItemById(item.id);
-    //         if(item){
-    //             return <IItemDrop>{
-    //                 item: fetchedItem,
-    //                 quantity: item.quantity
-    //             };
-    //         }
-    //     }
-    //     return null;
-    // }
 
     async updateEquippiedItems(mapOfSlottedItems: Map<string, IBasicItemDropped>, player: Player){
         const keys = Array.from(mapOfSlottedItems.keys());
@@ -202,25 +192,30 @@ export class PlayerService{
         return await this._playerRepo.updateLevelData(levels, totalLevel, player)
     }
 
-    // async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: IPlayer){
-    //     let bankSlotItems: IItem[] = []
-    //     for(const basicItemInfo of bankItems){
-    //         if(basicItemInfo){
-    //             let item = await this._itemService.getItemById(basicItemInfo.id)
-    //             if(item){
-    //                 bankSlotItems.push(item);
-    //             }
-    //         }
-    //     }
+    async updateBankItems(bankItems: IBasicItemDropped[], value: number, player: Player){
+        const bankSlots: BankSlot[] = []
+        let slotIndex = 0;
+        console.log("Service === TIME TO UPDATE BANK ITEMS ")
 
-    //     let bank : IBank = {
-    //         items: bankSlotItems,
-    //         value: value
-    //     }
-    //     return await this._playerRepo.updateBank(player, bank)
-    // }
+        for(const basicItemInfo of bankItems){
 
-    // async getBank(player: IPlayer){
-    //     return await this._playerRepo.getBank(player);
-    // }
+            if(basicItemInfo){
+                const item = await this._itemService.getItemById(basicItemInfo.id)
+                if(item && item.id > 0){
+                    const slot = new BankSlot();
+                    slot.quantity = basicItemInfo.quantity
+                    slot.slotIndex = slotIndex;
+                    bankSlots.push(slot);
+                }
+                slotIndex++;
+            }
+        }
+
+        const bank : Bank = {
+            slots: bankSlots
+        } as Bank;
+
+        console.log("Service got request to update bank now")
+        return await this._playerRepo.updateBank(player, bank)
+    }
 }

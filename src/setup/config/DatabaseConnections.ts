@@ -14,5 +14,5 @@ export const sqlite3File : ConnectionOptions= {
     database: "data/sqlite3/sqlite3file.sqlite",
     entities: ["bin/entity/*.{ts,js}"],
     synchronize: true,
-    logging: false
+    logging: true
 }
