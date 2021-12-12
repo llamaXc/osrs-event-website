@@ -1,5 +1,5 @@
 import { Connection, ConnectionOptions, createConnection } from "typeorm";
-import { sqlite3File, sqlite3InMemory } from "../setup/config/DatabaseConnections";
+import { sqlite3File, sqlite3InMemory, mysqlServer } from "../setup/config/DatabaseConnections";
 
 export interface IDatabase{
     initalize(): Promise<void>
@@ -24,6 +24,7 @@ class Database implements IDatabase{
     }
 }
 
-export const inMemeory: Database = new Database(sqlite3InMemory);
-export const sqlite3: Database   = new Database(sqlite3File);
+export const inMemeory: Database    = new Database(sqlite3InMemory);
+export const sqlite3: Database      = new Database(sqlite3File);
+export const mysql: Database        = new Database(mysqlServer);
 

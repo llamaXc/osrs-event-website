@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "tsc && node bin/app.js",
+    "start": "ts-node src/app.ts",
+    "docker_up": "npm install && npm run start",
     "testfile": "mocha -r ts-node/register src/tests/**/${0}.test.ts",
     "testbash": "sh -c 'mocha -r ts-node/register src/tests/**/${0}.test.ts'",
     "test": "mocha -r ts-node/register src/tests/**/*.ts",
@@ -22,6 +23,7 @@
     "express": "^4.17.1",
     "express-request-id": "^1.4.1",
     "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^5.0.2",
     "tslint": "^6.1.3",
