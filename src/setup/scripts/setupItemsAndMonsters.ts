@@ -37,7 +37,7 @@ async function importMonsters(){
         monsterToInsert.max_hit      = monster["max_hit"];
         monsterToInsert.id           = monster["id"]
 
-        if( i % 1000){
+        if( i % 1000 === 0){
             console.log("Monsters Imported: " + i);
         }
 
@@ -58,12 +58,11 @@ async function importItems(){
         itemToInsert.name = item["name"]
         itemToInsert.id   = item["id"]
 
-        if( i % 1000){
+        if( i % 1000 === 0){
             console.log("Items Imported: " + i);
         }
 
         await Item.save(itemToInsert);
     }
     console.log(">Items imported");
-
 }

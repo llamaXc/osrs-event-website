@@ -10,6 +10,7 @@ db.initalize().then(async () => {
 
     try{
         const registered = await playerService.registerNewPlayer("Iron 69M", "1000");
+        console.log("Created player")
     }catch(err){
         console.log("Error creating player");
     }

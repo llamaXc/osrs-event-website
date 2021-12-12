@@ -1,5 +1,6 @@
 import { PlayerService } from '../service/playerService'
 import { Request, Response } from 'express';
+import { Player } from '../entity/Player';
 
 export class PlayerController{
     private readonly _playerService : PlayerService;
@@ -9,45 +10,45 @@ export class PlayerController{
     }
 
     async getPlayerFromHeader(req: Request){
-        let header = req.headers;
-        let supplementInfo = req.body['playerInfo']
+        const header = req.headers;
+        const supplementInfo = req.body['playerInfo']
 
-        let authBearer = header['authorization']
+        const authBearer = header['authorization']
         let playerHash = ''
         if(authBearer){
             playerHash = authBearer.split(' ')[1]
         }
 
         let doesExist = await this._playerService.doesPlayerExist(playerHash);
-        console.log("Does exist: " + doesExist);
-        
-        // if(!doesExist){
-        //     let username = "Zezima"
-        //     if(supplementInfo !== null){
-        //         username = supplementInfo['username']
-        //     }
-        //     await this._playerService.registerNewPlayer(playerHash, username);
-        //     doesExist = true
-        // }
 
-        // if(supplementInfo !== null && doesExist){
-        //     const {combatLevel, position, username} = supplementInfo
-        //     const {x, y, plane} = position;
-        //     let player = await this._playerService.getPlayerByHash(playerHash);
+        if(!doesExist){
+            let username = "Zezima"
+            if(supplementInfo !== null){
+                username = supplementInfo['username']
+            }
+            await this._playerService.registerNewPlayer(playerHash, username);
+            doesExist = true
+        }
 
-        //     await this._playerService.updateSupplementInformation(
-        //         player,
-        //         combatLevel, 
-        //         username, 
-        //         x, 
-        //         y, 
-        //         plane
-        //     );
-        // }
+        let player : Player = await this._playerService.getPlayerByHash(playerHash);
 
-       return await this._playerService.getPlayerByHash(playerHash);
+        if(supplementInfo !== null && doesExist){
+            const {combatLevel, position, username} = supplementInfo
+            const {x, y, plane} = position;
+            const fetchedPlayer = await this._playerService.getPlayerByHash(playerHash);
+
+            player = await this._playerService.updateSupplementInformation(
+                fetchedPlayer,
+                combatLevel,
+                username,
+                x,
+                y,
+                plane
+            );
+        }
+        return {playerHash, player}
     }
-    
+
     // async getPlayerById(req: Request, res: Response){
     //     try{
     //         let id = parseInt(req.params.id);
@@ -55,7 +56,7 @@ export class PlayerController{
     //         let completeData : any = {}
     //         if(player){
     //             completeData['player'] = await this._playerService.getPlayerById(id);
-               
+
     //             let lvls = await this._playerService.getLevelsForPlayer(player)
     //             completeData['levels'] = lvls
     //             if(lvls){
@@ -96,7 +97,7 @@ export class PlayerController{
     //         let totalLvl = data['totalLevel']
     //         await this._playerService.updatePlayerLevels(player, lvlMap, totalLvl);
     //     }
-        
+
     //     res.send("Done")
     // }
 
@@ -176,7 +177,7 @@ export class PlayerController{
 
     //             return res.json(response).status(200)
     //         }
-        
+
     //     }
     //     return res.json({msg: "No levels items found"}).status(404)
     // }
@@ -189,7 +190,7 @@ export class PlayerController{
     //     if(player){
     //         await this._playerService.updateInventoryItems(data['inventory'], player, value)
     //     }
-        
+
     //     res.send("Done")
     // }
 
@@ -197,7 +198,7 @@ export class PlayerController{
     //     let player = await this.getPlayerFromHeader(req);
     //     if (player){
     //         let data = req.body.data
-            
+
     //         let map = new Map<string, IBasicItemDropped>(Object.entries(data['equippedItems']));
     //         let mapOfSlots: Map<string, IBasicItemDropped> = new Map()
 
@@ -223,24 +224,24 @@ export class PlayerController{
     // }
 
     async saveNpcLoot(req : Request, res: Response){
-        let data = req.body.data
-        console.log("GOT REQUEST TO SAVE LOOT!")
-        let npcId = data['npcId']
-        let droppedItems = data['items']
-        let killValue = data['gePrice'];
+        const data = req.body.data
+        const npcId = data['npcId']
+        const droppedItems = data['items']
+        const killValue = data['gePrice'];
 
-        let player = await this.getPlayerFromHeader(req);
-        
+        const {playerHash, player} = await this.getPlayerFromHeader(req);
+
         if(player){
-            console.log("Player exists!");
             await this._playerService.createNpcKill(npcId, droppedItems, killValue, player)
+        }else{
+            console.log("Failed to locate player with key: " + playerHash)
         }
 
         res.send("Done")
     }
 
     async getNpcKillsTest(req : Request, res: Response){
-        let player = await this._playerService.getPlayerById(1);
+        const player = await this._playerService.getPlayerById(1);
         if(player){
             return res.send(await this._playerService.getNpcKills(player))
         }

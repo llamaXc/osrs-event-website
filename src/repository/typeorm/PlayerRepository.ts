@@ -2,6 +2,7 @@ import { ItemDrop } from "../../entity/ItemDrop";
 import { Monster } from "../../entity/Monster";
 import { NpcKill } from "../../entity/NpcKill";
 import { Player } from "../../entity/Player";
+import { Position } from "../../entity/Position";
 import { IPlayerRepository } from "./../interfaces/IPlayerRepository";
 
 export class TypeOrmPlayerRepository implements IPlayerRepository{
@@ -56,21 +57,27 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         return await Player.save(player);
     }
 
-    // async updatePosition(player: IPlayer, coords: ICoordinate): Promise<boolean>{
-    //     let current_unix_time = Math.floor(Date.now() / 1000)
-    //     coords.time_updated = current_unix_time;
-    //     await this._db.updatePositionByPlayerId(player.id, coords);
-    //     return true;
-    // }
+    async updatePosition(player: Player, coords: Position): Promise<Player>{
+        if(player.position === undefined){
+            player.position = coords;
+            return await Player.save(player)
+        }else{
+            player.position.x = coords.x;
+            player.position.y = coords.y;
+            player.position.z = coords.z;
+            return await Player.save(player);
+        }
+    }
 
-    // async getPosition(player: IPlayer): Promise<ICoordinate|undefined>{
-    //     return await this._db.getPositionByPlayerId(player.id);
-    // }
+    async getPosition(player: Player): Promise<Position|undefined>{
+        return player.position;
+    }
 
-    // async updateNameAndLevel(player: IPlayer, username: string, level: number): Promise<boolean>{
-    //     await this._db.updateUsernameAndLevelByPlayerId(player.id, username, level);
-    //     return true;
-    // }
+    async updateNameAndLevel(player: Player, username: string, level: number): Promise<Player>{
+        player.username = username;
+        player.combatLevel = level;
+        return await Player.save(player);
+    }
 
     // async getPlayerByToken(token: string): Promise<Player|undefined>{
     //     return await this._db.getPlayerByHash(token);

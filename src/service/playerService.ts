@@ -5,7 +5,8 @@ import { IPlayerRepository } from '../repository/interfaces/IPlayerRepository'
 import { IBasicItemDropped } from '../state/old_ts';
 import { ItemService } from './itemService';
 import { MonsterService } from './monsterService';
-import crypto from "crypto"
+import {v4 as uuidv4} from 'uuid';
+import { Position } from '../entity/Position';
 
 export class PlayerService{
     constructor(private readonly _playerRepo: IPlayerRepository,
@@ -30,28 +31,34 @@ export class PlayerService{
         return await this._playerRepo.getPlayerByToken(playerToken) !== undefined;
     }
 
-    async registerNewPlayer(username: string, key: string){
+    async registerNewPlayer(username: string, key?: string){
         if(key === undefined){
-            key = crypto.randomUUID();
+            key = uuidv4()
         }
-        return await this._playerRepo.addNewPlayer({
-            username, token: key, combatLevel: 0
-        } as Player)
+        try{
+            return await this._playerRepo.addNewPlayer({
+                username, token: key, combatLevel: 0
+            } as Player)
+        }catch(err){
+            console.error(err)
+            throw  new Error("Error while saving player.")
+        }
     }
 
-    // async updateSupplementInformation(player: IPlayer, combatLevel: number, username: string, x: number, y: number, plane: number){
-    //     let coords: ICoordinate = {
-    //         x: x,
-    //         y: x,
-    //         z: plane
-    //     }
-    //     await this._playerRepo.updatePosition(player, coords);
-    //     await this._playerRepo.updateNameAndLevel(player, username, combatLevel);
-    // }
+    async updateSupplementInformation(player: Player, combatLevel: number, username: string, x: number, y: number, plane: number){
+        const pos: Position = {
+            x,
+            y,
+            z: plane
+        } as Position
 
-    // async getPosition(player: IPlayer){
-    //     return await this._playerRepo.getPosition(player);
-    // }
+        const updatedPlayer = await this._playerRepo.updatePosition(player, pos);
+        return await this._playerRepo.updateNameAndLevel(updatedPlayer, username, combatLevel);
+    }
+
+    async getPosition(player: Player){
+        return await this._playerRepo.getPosition(player);
+    }
 
     async getPlayerById(playerId: number){
         return await this._playerRepo.getPlayerById(playerId);
@@ -157,13 +164,15 @@ export class PlayerService{
                 droppedItem.item = fetchedItem;
 
                 items.push(droppedItem);
+            }else{
+                throw new Error("Unable to locate item in the database: " + item.id)
             }
         }
 
         if(npc){
             return this._playerRepo.createNpcKill(kill, items, npc, player);
         }else{
-            return undefined
+            throw new Error("Unable to locate npc in the databse: " + npcId);
         }
 
     }

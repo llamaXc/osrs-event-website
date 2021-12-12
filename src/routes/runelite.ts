@@ -5,7 +5,6 @@ import {playerController} from "../controller/Controllers"
 const router = express.Router();
 
 router.post('/npc_kill', (req, res) => {
-    console.log("NPC KILL")
     playerController.saveNpcLoot(req, res)
 })
 
@@ -54,4 +53,4 @@ router.get('/', (req,res) => {
 // })
 
 
-module.exports = router ;
+export default router;

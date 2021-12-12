@@ -5,7 +5,6 @@ import { itemService, monsterService, playerService } from "../service/Services"
 import { IBasicItemDropped } from "../state/old_ts";
 import {expect} from 'chai';
 import {inMemeory} from "../state/Database"
-import { ItemDrop } from "../entity/ItemDrop";
 
 before(async () => {
     await inMemeory.initalize()
@@ -51,11 +50,19 @@ describe('Player service', () => {
     it('can create a new player', async () => {
         const createdPlayer = await playerService.registerNewPlayer("Drop Squad", "1005");
         const playerFound = await playerService.getPlayerById(createdPlayer.id);
-
         expect(playerFound?.username === "Drop Squad")
         expect(playerFound?.combatLevel === 0)
         expect(playerFound?.token === "1000")
     });
+
+    it ('can handle duplicate usernames', async () => {
+        try{
+            const createdPlayer = await playerService.registerNewPlayer("Bob");
+            const duplicateName = await playerService.registerNewPlayer("Bob");
+        }catch(err){
+            expect(err).to.be.an('error')
+        }
+    })
 
     it('can get a player by id', async () => {
         const FIRST_PLAYER_ID = 1
@@ -93,11 +100,35 @@ describe('Player service', () => {
         }
     })
 
+    it ('can throw error on invalid item drop', async () => {
+        const items: IBasicItemDropped[] = [
+            { id: 99999999, quantity: 4 },
+        ]
+
+        try{
+            await playerService.createNpcKill(blackDragonNpc.id, items, 1000, playerIron69M)
+        }catch(error){
+            expect(error)
+            .to
+            .be
+            .an('error')
+        }
+    })
+
     it('can get npc kill for a player', async () => {
         const kills = await playerService.getNpcKills(playerIron69M);
         for(const kill of kills){
             expect(kill.player.username).to.equal(playerIron69M.username);
         }
     })
+
+    it('can update supplement info', async () => {
+        const updated = await playerService.updateSupplementInformation(playerIron69M, 121, "Zezima", 15, 20, 1);
+        expect(updated.position.x).to.equal(15);
+        expect(updated.position.y).to.equal(20);
+        expect(updated.position.z).to.equal(1);
+        expect(updated.combatLevel).to.equal(121);
+        expect(updated.username).to.equal("Zezima")
+    });
 
 });
