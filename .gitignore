@@ -1,3 +1,4 @@
 bin/
 node_modules/
 data/sqlite3/
+data/mysql/
