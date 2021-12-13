@@ -15,5 +15,17 @@ export const sqlite3File : ConnectionOptions= {
     migrations: ["src/migrations/**/*.ts"],
     entities: ["src/entity/*.{ts,js}"],
     synchronize: true,
-    logging: true
+    logging: false
+}
+
+export const mysqlServer : ConnectionOptions= {
+    type: "mysql",
+    host: "mysql_server",
+    port: 3306,
+    username: "user",
+    password: "user_password",
+    database: "development",
+    entities: ["src/entity/*.{ts,js}"],
+    synchronize: true,
+    logging: false
 }

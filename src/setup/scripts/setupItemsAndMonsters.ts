@@ -3,12 +3,12 @@ import fs from "fs"
 import path from "path"
 import { Item } from "../../entity/Item";
 import { Monster } from "../../entity/Monster";
-import { IDatabase, sqlite3 } from "../../state/Database";
+import { IDatabase, mysql } from "../../state/Database";
 
 const MONSTER_PATH = "../../../data/json/monsters-complete.json"
 const ITEM_PATH    = "../../../data/json/items-complete.json"
 
-const db: IDatabase = sqlite3;
+const db: IDatabase = mysql;
 
 db.initalize().then(async () => {
     console.log("Connected. Importing data");

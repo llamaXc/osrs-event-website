@@ -1,7 +1,6 @@
-import { IDatabase, sqlite3 } from "../state/Database";
+import { IDatabase, mysql } from "../state/Database";
 import { playerService } from "../service";
-
-const db : IDatabase = sqlite3;
+const db : IDatabase = mysql;
 
 db.initalize().then(async () => {
     console.log("========= Database initalized succesfully ===============");

@@ -9,7 +9,7 @@ export class Item extends BaseEntity{
     @Column()
     name: string;
 
-    @Column()
+    @Column({ length: "2048" })
     icon: string;
 
 }
