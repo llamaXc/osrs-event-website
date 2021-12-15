@@ -1,4 +1,4 @@
-# osrs-event-website
+# OSRSEvents Website Installtion
 
 1. Install Docker: `https://docs.docker.com/get-docker/`
 
