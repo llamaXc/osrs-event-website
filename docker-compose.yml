@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mysql_server:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user_password
+      MYSQL_DATABASE: development
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./server/data/mysql:/var/lib/mysql
+    restart: always
+  express_server:
+    build: ./server
+    depends_on:
+      - mysql_server
+    volumes:
+      - ./server:/workspace
+      - /workspace/node_modules
+    ports:
+      - "3000:3000"
+  nextjs_client:
+    build: ./web
+    volumes:
+      - ./web:/workspace
+      - /workspace/node_modules
+    ports:
+      - "5000:3000"

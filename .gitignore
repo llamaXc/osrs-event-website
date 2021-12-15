@@ -1,0 +1,37 @@
+# Back end server ignore
+server/bin/
+server/node_modules/
+server/data/mysql/
+
+# Front end web ignore
+web/node_modules
+web/.pnp
+web/.pnp.js
+
+# testing
+web/coverage
+
+# next.js
+web/.next/
+web/out/
+
+# production
+web/build
+
+# misc
+.DS_Store
+web/*.pem
+
+# debug
+web/npm-debug.log*
+web/yarn-debug.log*
+web/yarn-error.log*
+
+# local env files
+web/.env.local
+web/.env.development.local
+web/.env.test.local
+web/.env.production.local
+
+# vercel
+web/.vercel
