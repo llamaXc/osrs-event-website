@@ -1,7 +1,9 @@
 import { Box } from "@material-ui/core";
 import { Button } from "@mui/material";
+import React from "react";
 import Layout from "../components/Layout";
 import { usePlayerStore } from "../store/player";
+import Link from "next/link";
 
 const AccountPage = () => {
     const username = usePlayerStore((state) => state.username);
@@ -36,7 +38,7 @@ const AccountPage = () => {
                 {!authenticated && (
                     <p>
                         No player found, go to the home page and{" "}
-                        <a href='home'>login!</a>
+                        <Link href='home'>login!</Link>
                     </p>
                 )}
             </Box>
