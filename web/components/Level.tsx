@@ -53,7 +53,6 @@ export function Level() {
     }
 
     useEffect( () => {
-        setLoading(false)
         loadPlayer().then(res => {
             console.log(JSON.stringify(res, null, 2))
             let levels = res.player.levels
@@ -71,7 +70,7 @@ export function Level() {
 
 
     return (
-        <div className="invo-wrapper">
+        // <div className="invo-wrapper">
             <div className="invo-container">
                 { isLoading && <CircularProgress className="loader" />}
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
@@ -83,15 +82,17 @@ export function Level() {
                             </div>
                         </Grid>
                     })}
-                    <Grid item xs={4}>
-                        <div className="level-slot">
-                            <div className="total-level">
-                                <p>{total}</p>
+                    {!isLoading && 
+                        <Grid item xs={4}>
+                            <div className="level-slot">
+                                <div className="total-level">
+                                    <p>{total}</p>
+                                </div>
                             </div>
-                        </div>
-                    </Grid>
+                        </Grid>
+                    }
                 </Grid>
             </div>
-        </div>
+        // </div>
     )
 }

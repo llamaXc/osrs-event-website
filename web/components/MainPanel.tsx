@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import {Inventory} from "./Inventory"
 import {Level} from "./Level"
+import { Equipment } from './Equipment'
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -41,22 +43,35 @@ export function MainPanel() {
   };
 
   return (
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box className="panel" sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs className="iconTabs" value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab className="iconTab" icon={<img src="/icons/inventory.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/level.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/equipment.png" />}/>
-        </Tabs>
+          <Tab className="iconTab" icon={<img src="/icons/quest.png" />}/>
 
-        <TabPanel value={value} index={0}>
-            <Inventory/>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-            <Level/>
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-            Empty
-        </TabPanel>
+        </Tabs>
+          <TabPanel value={value} index={0}>
+            <div className="main-wrapper">
+              <Inventory/>
+            </div>
+
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <div className="main-wrapper">
+              <Level/>
+            </div>
+
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <div className="main-wrapper">
+              <Equipment/>
+            </div>
+
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+              Quests
+          </TabPanel>
       </Box>
   );
 }

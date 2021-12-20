@@ -265,7 +265,7 @@ export class PlayerService implements IPlayerService {
         const start = Date.now();
         const wholePlayer = await Player.findOne({
             where: { username: username },
-            relations: [ "levels", "inventory"],
+            relations: [ "levels", "inventory", 'equipment'],
         });
         const end = Date.now();
         const executionTime = end - start;

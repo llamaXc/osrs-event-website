@@ -44,7 +44,7 @@ export function Inventory() {
 
 
     return (
-        <div className="invo-wrapper">
+        // <div className="invo-wrapper">
             <div className="invo-container">
                 { isLoading && <CircularProgress />}
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
@@ -63,6 +63,6 @@ export function Inventory() {
                     })}
                 </Grid>
             </div>
-        </div>
+        // </div>
     )
 }
