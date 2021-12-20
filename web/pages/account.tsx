@@ -36,7 +36,7 @@ const AccountPage = () => {
                 {!authenticated && (
                     <p>
                         No player found, go to the home page and{" "}
-                        <a href='/'>login!</a>
+                        <a href='home'>login!</a>
                     </p>
                 )}
             </Box>
