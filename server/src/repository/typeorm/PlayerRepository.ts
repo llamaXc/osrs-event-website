@@ -49,7 +49,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithBank = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.bank", "bank")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithBank === undefined){
                 throw new Error("Requires valid bank, will buid in catch")
@@ -76,7 +76,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithQuests = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.quests", "quest")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithQuests === undefined){
                 throw new Error("Requires valid quest, will buid in catch")
@@ -104,7 +104,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
     async updatePosition(player: Player, coords: Position): Promise<Player>{
         const playerWithPosition = await Player.createQueryBuilder("player")
         .leftJoinAndSelect("player.position", "position")
-        .where("player_id = :id", {id: player.id}).getOne();
+        .where("player.id = :id", {id: player.id}).getOne();
 
         console.log("Repo: Position update: " + JSON.stringify(coords, null, 2))
 
@@ -129,7 +129,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithInventory = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.inventory", "inventory")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithInventory === undefined){
                 throw new Error("Requires valid inventory, will buid in catch")
@@ -155,7 +155,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithEquipment = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.equipment", "equipment")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithEquipment === undefined){
                 throw new Error("Requires valid equipment, will buid in catch")
@@ -182,7 +182,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithLevels = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.levels", "levels")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithLevels === undefined){
                 throw new Error("Requires valid levels, will buid in catch")
