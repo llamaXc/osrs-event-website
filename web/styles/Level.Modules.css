@@ -1,0 +1,22 @@
+.level-slot{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: yellow;
+    background-color: rgb(73, 85, 73);
+    min-height: 100%;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+.level-image{
+    display: flex;
+    justify-content: start;
+    flex-shrink: 0;
+    min-height: 100%;
+}
+
+.total-level{
+    margin: 0px;
+    padding: 0px;
+}

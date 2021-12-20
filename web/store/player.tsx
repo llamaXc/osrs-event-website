@@ -15,6 +15,7 @@ interface PlayerAPIResponse {
     combatLevel: number;
     authenticated: boolean;
 }
+
 const fetchPlayerByName = async (username): Promise<PlayerAPIResponse> => {
     const FIXTURE_PLAYER_RESPONSE: PlayerAPIResponse = {
         username: "IRON 69M",

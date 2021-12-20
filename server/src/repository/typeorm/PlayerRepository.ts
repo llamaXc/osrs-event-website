@@ -194,12 +194,15 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
             // Setup the new levels slots for our current equipment
             playerWithLevels.levels = levels;
 
+            playerWithLevels.totalLevel = totalLevel;
+
             // Save and apply the updated levels to our player.
             return await Player.save(playerWithLevels);
 
         }catch(err){
             // No levels yet for this player, lets make and save one.
              player.levels = levels;
+             player.totalLevel = totalLevel;
              return await Player.save(player);
         }
     }

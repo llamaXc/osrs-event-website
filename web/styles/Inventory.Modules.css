@@ -1,0 +1,55 @@
+.invo-container{
+    display: flex;
+    width: 100%;
+    background-color: rgb(74, 64, 54);
+    border: 5% solid black;
+    padding: 10px;
+}
+
+
+.invo-wrapper{
+    padding: 20px;
+    width: 50%;
+}
+
+.item-temp{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 3px;
+}
+.item-temp:hover{
+    background-color: rgb(85, 76, 66);
+    border: 1px solid black;
+}
+.item-image{
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
+}
+
+.item-slot{
+    position: relative;
+    min-width: 100%;
+    min-height: 100%
+}
+.item-quantity{
+    position: absolute;
+    left: 5%;
+    top: 0px;
+    font-size: 2vw;
+    color: yellow;
+    z-index: 100;
+}
+
+.item-tooltip{
+    color: white;
+    max-width: 200;
+}
+
+.loader{
+    color: white;
+}

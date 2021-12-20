@@ -21,11 +21,11 @@ services:
       - ./server:/workspace
       - /workspace/node_modules
     ports:
-      - "3000:3000"
+      - "6501:3000"
   nextjs_client:
     build: ./web
     volumes:
       - ./web:/workspace
       - /workspace/node_modules
     ports:
-      - "5000:3000"
+      - "6500:3000"
