@@ -47,15 +47,9 @@ export function Level() {
         for(let i = 0; i < LEVEL_NAME_TO_POSITION.length; i++){
             const levelName = LEVEL_NAME_TO_POSITION[i];
             const levelFromApi = levels[levelName];
-            let levelToAdd = {name: levelName, level: levelFromApi, id: i, icon: "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABkAAAAZAQMAAAD+JxcgAAAABlBMVEUAAAEAAAFq3O48AAAAAXRSTlMAQObYZgAAAFBJREFUeAEFwTEOQDAAAMBrOnSR+oJndOijbBZEYvUgI/+wiE/YuAMUKFAAwof4baTpIo8vqfbEvSPsUKBChRkGeBbCfRDPg7QutAk5o2kAP9iiD+JkO/gAAAAAAElFTkSuQmCC"}
+            let levelToAdd = {name: levelName, level: levelFromApi, id: i, icon: "levels/" + levelName + ".png"}
             setLevels(old => [...old, levelToAdd])
         }
-        // for(let i = 0; i < 23; i++){
-        //     let index = LEVEL_NAME_TO_POSITION.get(
-        //     let name = levels
-        //     let levelToAdd = {name: level.name, level: level.level, id: i, icon: "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABkAAAAZAQMAAAD+JxcgAAAABlBMVEUAAAEAAAFq3O48AAAAAXRSTlMAQObYZgAAAFBJREFUeAEFwTEOQDAAAMBrOnSR+oJndOijbBZEYvUgI/+wiE/YuAMUKFAAwof4baTpIo8vqfbEvSPsUKBChRkGeBbCfRDPg7QutAk5o2kAP9iiD+JkO/gAAAAAAElFTkSuQmCC"}
-        //     setLevels(old => [...old, levelToAdd])
-        // }
     }
 
     useEffect( () => {
@@ -63,14 +57,12 @@ export function Level() {
         loadPlayer().then(res => {
             console.log(JSON.stringify(res, null, 2))
             let levels = res.player.levels
-            let total = res.player.totalLevel
-            setTotal(total)
+            setTotal(res.player.totalLevel)
 
             var mapLevels = levels.reduce(function(map, level) {
                 map[level.name.toLowerCase()] = level.level;
                 return map;
             }, {});
-            console.log(mapLevels);
 
             buildLevels(mapLevels)
             setLoading(false)
@@ -87,7 +79,7 @@ export function Level() {
                         return <Grid  item key={level.id} xs={4}>
                             <div className="level-slot">
                                 <img className="level-image" src={level.icon}/>
-                                <p>{level.level}/99</p>
+                                <p>{level.level}</p>
                             </div>
                         </Grid>
                     })}

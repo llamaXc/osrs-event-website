@@ -11,13 +11,14 @@ function TabPanel(props) {
   return (
     <div
       role="tabpanel"
+      className="tabpanel-container"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box className="tabpanel-box" sx={{ p: 3 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -40,23 +41,22 @@ export function MainPanel() {
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Inventory"/>
-          <Tab label="Levels"/>
-          <Tab label="Equipment" />
+        <Tabs className="iconTabs" value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tab className="iconTab" icon={<img src="/icons/inventory.png" />}/>
+          <Tab className="iconTab" icon={<img src="/icons/level.png" />}/>
+          <Tab className="iconTab" icon={<img src="/icons/equipment.png" />}/>
         </Tabs>
+
+        <TabPanel value={value} index={0}>
+            <Inventory/>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+            <Level/>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+            Empty
+        </TabPanel>
       </Box>
-      <TabPanel value={value} index={0}>
-        <Inventory/>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <Level/>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Empty
-      </TabPanel>
-    </Box>
   );
 }

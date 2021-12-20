@@ -1,3 +1,25 @@
+
+.iconTabs{
+    background-color: green;
+    margin: 0px;
+    padding: 0px;
+}
+
+.iconTab{
+    border: 4px solid black;
+}
+
+.tabpanel-container{
+    background-color: yellow;
+    margin: 0px;
+    padding: 0px;
+}
+
+.tabpanel-box{
+    margin: 0px;
+    padding: 0px;
+}
+
 .invo-container{
     display: flex;
     width: 100%;
@@ -6,10 +28,11 @@
     padding: 10px;
 }
 
-
 .invo-wrapper{
-    padding: 20px;
+    /* padding: 20px; */
     width: 50%;
+    margin: 0px;
+    background-color: red;
 }
 
 .item-temp{
