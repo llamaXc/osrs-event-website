@@ -44,7 +44,7 @@ export class Player extends BaseEntity{
     @OneToMany(() => Level, l => l.player, {cascade: true})
     levels: Level[]
 
-    @OneToMany(() => Quest, q => q.player, {cascade: true})
+    @OneToMany(() => Quest, q => q.player,  {cascade: true})
     quests: Quest[]
 
     @Column({default: 0})

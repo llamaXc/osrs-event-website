@@ -12,6 +12,8 @@ export interface IPlayerService {
 
     doesPlayerExist(playerToken: string): Promise<boolean>;
 
+    getPlayers(): Promise<Player[]>
+
     registerNewPlayer(username: string, key?: string): Promise<Player>;
 
     updateSupplementInformation(

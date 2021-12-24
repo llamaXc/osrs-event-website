@@ -1,18 +1,14 @@
 import { CircularProgress, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { usePlayerStore } from "../store/player";
 
 export function Level() {
+
+    const player = usePlayerStore(state => state.player);
 
     const [levels, setLevels] = useState([])
     const [isLoading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
-
-    async function loadPlayer () {
-        const URL = "http://localhost:6501/api-unauth"
-        console.log("Getting fetch: " + URL)
-        let response = await fetch(URL)
-        return await response.json()
-    }
 
     const LEVEL_NAME_TO_POSITION = [
         "attack",
@@ -53,11 +49,11 @@ export function Level() {
     }
 
     useEffect( () => {
-        loadPlayer().then(res => {
-            console.log(JSON.stringify(res, null, 2))
-            let levels = res.player.levels
-            setTotal(res.player.totalLevel)
-
+        if(player){
+            console.log("Building levels!")
+            const levels = player.levels;
+            setTotal(player.totalLevel)
+            console.log(JSON.stringify(levels, null, 2))
             var mapLevels = levels.reduce(function(map, level) {
                 map[level.name.toLowerCase()] = level.level;
                 return map;
@@ -65,8 +61,9 @@ export function Level() {
 
             buildLevels(mapLevels)
             setLoading(false)
-        });
-    },[])
+        }
+
+    },[player])
 
 
     return (

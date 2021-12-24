@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import {Inventory} from "./Inventory"
 import {Level} from "./Level"
 import { Equipment } from './Equipment'
+import {Quests} from "./Quests"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -34,6 +35,7 @@ function a11yProps(index) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
+
 
 export function MainPanel() {
   const [value, setValue] = React.useState(0);
@@ -70,7 +72,9 @@ export function MainPanel() {
 
           </TabPanel>
           <TabPanel value={value} index={3}>
-              Quests
+            <div className="main-wrapper">
+              <Quests/>
+            </div>
           </TabPanel>
       </Box>
   );

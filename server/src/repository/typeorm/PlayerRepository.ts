@@ -74,25 +74,32 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
 
     async updateQuestData(player: Player, quests: Quest[], qp: number): Promise<Player>{
         try{
+            console.log("Updating quets!")
             const playerWithQuests = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.quests", "quest")
             .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithQuests === undefined){
+                console.log("undefined!")
                 throw new Error("Requires valid quest, will buid in catch")
             }
+
+            console.log("Dete where player is our player")
 
             // Remove all Quset attached to the current equipment
             await Quest.delete({'player': playerWithQuests});
 
             // Setup the new quests slots for our current equipment
             playerWithQuests.quests = quests;
+            playerWithQuests.questPoints = qp;
 
             // Save and apply the updated quests to our player.
             return await Player.save(playerWithQuests);
         }catch(err){
             // No levels yet for this player, lets make and save one.
+            console.log("no quests found making them now!")
             player.quests = quests;
+            player.questPoints = qp;
             return await Player.save(player);
         }
     }
@@ -205,6 +212,12 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
              player.totalLevel = totalLevel;
              return await Player.save(player);
         }
+    }
+
+    async getPlayers(): Promise<Player[]> {
+        const players = Player.find();
+        console.log(players);
+        return players;
     }
 }
 

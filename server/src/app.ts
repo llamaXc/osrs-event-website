@@ -6,7 +6,6 @@ import { osrsApiRoutes } from "./routes"
 
 import morgan, { StreamOptions } from "morgan";
 
-
 import express from 'express';
 import cors from "cors"
 const morganMiddleware = morgan('tiny')

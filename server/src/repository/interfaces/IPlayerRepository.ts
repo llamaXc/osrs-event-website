@@ -29,4 +29,5 @@ export interface IPlayerRepository{
 
     updateEquipment(equipment: Equipment, player: Player): Promise<Player>
     updateLevelData(levels: Level[], totalLevel: number, player: Player): Promise<Player>
+    getPlayers(): Promise<Player[]>
 }

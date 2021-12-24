@@ -1,46 +1,39 @@
-import { Box } from "@material-ui/core";
-import { Button } from "@mui/material";
-import React from "react";
+import { Box, Link } from "@material-ui/core";
+import React, { useEffect } from "react";
 import Layout from "../components/Layout";
-import { usePlayerStore } from "../store/player";
-import Link from "next/link";
+import { usePlayersStore } from "../store/players";
 
 const AccountPage = () => {
-    const username = usePlayerStore((state) => state.username);
-    const combatLevel = usePlayerStore((state) => state.combatLevel);
-    const authenticated = usePlayerStore((state) => state.authenticated);
-    const logoutAction = usePlayerStore((state) => state.logout);
+
+    const fetchPlayers = usePlayersStore((state) => state.getPlayers);
+    const players = usePlayersStore(state => state.players);
+
+    useEffect(() => {
+        fetchPlayers();
+    }, [])
+
+    useEffect(() => {
+        console.log(players)
+    }, [players])
+
     return (
         <Layout title='About'>
             <Box
                 display='flex'
-                justifyContent='center'
+                justifyContent='flex-start'
                 flexDirection='column'
                 alignItems='center'
                 minHeight='90vh'
                 flexWrap='wrap'
             >
-                <h1>About</h1>
-                {authenticated && (
-                    <div>
-                        <p>
-                            Current player: {username} lvl: {combatLevel}
-                        </p>
-                        <Button
-                            variant='outlined'
-                            onClick={() => logoutAction()}
-                        >
-                            Logout
-                        </Button>
-                    </div>
-                )}
-
-                {!authenticated && (
-                    <p>
-                        No player found, go to the home page and{" "}
-                        <Link href='home'>login!</Link>
-                    </p>
-                )}
+                <div>
+                <h1>View a player</h1>
+                <Box display="flex" flexDirection={"column"}>
+                {players && players.map(player => {
+                    return <Link href={"player?id=" + player.id}> Lvl: {player.combatLevel}    {player.username}</Link>
+                })}
+                </Box>
+                </div>
             </Box>
         </Layout>
     );

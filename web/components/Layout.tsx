@@ -19,13 +19,13 @@ const Layout = ({ children, title = "This is the default title" }: Props) => {
                 />
             </Head>
             <header>
-                <nav>
+                <nav className="navbar">
                     <Link href='home'>
                         <a>Home</a>
-                    </Link>{" "}
-                    |{" "}
+                    </Link>
+
                     <Link href='account'>
-                        <a>Account</a>
+                        <a>Accounts</a>
                     </Link>
                 </nav>
             </header>

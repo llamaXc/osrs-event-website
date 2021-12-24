@@ -1,17 +1,12 @@
 import { CircularProgress, Grid, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { usePlayerStore } from "../store/player";
 
 export function Equipment() {
 
     const [isLoading, setLoading] = useState(true);
     const [equipment, setEquipment] = useState([]);
-
-    async function loadPlayer () {
-        const URL = "http://localhost:6501/api-unauth"
-        console.log("Getting fetch: " + URL)
-        let response = await fetch(URL)
-        return await response.json()
-    }
+    const player = usePlayerStore(state => state.player);
 
     function buildEquipment(equipmentFromApi){
         setEquipment([])
@@ -40,8 +35,8 @@ export function Equipment() {
 
     useEffect( () => {
         setLoading(false)
-        loadPlayer().then(res => {
-            let equipment = res.player.equipment.slots
+        if(player){
+            let equipment = player.equipment.slots
             console.log(JSON.stringify(equipment, null, 2))
 
             var equipmentMap = equipment.reduce(function(map, equipmentSlot) {
@@ -50,8 +45,8 @@ export function Equipment() {
             }, {});
             buildEquipment(equipmentMap)
             setLoading(false)
-        });
-    },[])
+        }
+    },[player])
 
 
     const EQUIPMENT_ORDER = [
@@ -75,28 +70,27 @@ export function Equipment() {
     console.log("====")
     console.log(equipment.length)
     return (
-        // <div className="invo-wrapper">
-            <div className="invo-container">
-                { isLoading && <CircularProgress className="loader" />}
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
-                    {equipment.map((slot) => {
-                            if(slot.valid){
-                                console.log(slot)
-                                return <Grid item key={slot.id} xs={4}>
-                                <Tooltip title={slot.name}>
-                                    <div className="equipment-slot">
-                                        {!slot.image && <p>{slot.name}</p>}
-                                        {slot.image && <img className="equipment-image" src={slot.image}/>}
-                                    </div>
-                                    </Tooltip>
-                                </Grid>
-                            }else{
-                                return <Grid  item key={slot.id} xs={4}><p>&#8205;</p>
-                                </Grid>
-                            }
-                        })}
-                </Grid>
-            </div>
-        // </div>
+        <div className="invo-container">
+            { isLoading && <CircularProgress className="loader" />}
+            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
+                {equipment.map((slot) => {
+                        if(slot.valid){
+                            console.log(slot)
+                            return <Grid className="equipment-slot" item key={slot.id} xs={4}>
+                            <Tooltip title={slot.name}>
+                                <div>
+                                    {!slot.image && <p>{slot.name}</p>}
+                                    {slot.image && <img className="equipment-image" src={slot.image}/>}
+                                </div>
+                                </Tooltip>
+                            </Grid>
+                        }else{
+                            return <Grid  item key={slot.id} xs={4}>
+                                <p>&#8205;</p>
+                            </Grid>
+                        }
+                    })}
+            </Grid>
+        </div>
     )
 }
