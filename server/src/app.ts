@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "./setup/initalize"
+import { Request, Response } from 'express';
 
 import { osrsAuthValidator } from "./middleware";
 import { osrsApiRoutes } from "./routes"
@@ -19,6 +20,10 @@ app.use(cors())
 
 app.use('/api', osrsAuthValidator, osrsApiRoutes);
 app.use('/api-unauth', osrsApiRoutes);
+
+app.get('/hello', (req: Request, res: Response) => {
+    return res.json({msg: "Success!"})
+})
 
 app.listen( port, () => {
     console.log( `\t> OSRSEvents backend started at http://localhost:${ port }` );

@@ -22,11 +22,12 @@ db.initalize().then(async () => {
             await playerService.registerNewPlayer("GIMmyJohns", "2000")
          }
         }catch(e){
-            
+
         }
     }catch(err){
         console.log("Player already exists in db");
     }
 }).catch(async (err) => {
     console.log(err)
+    console.log("App will continue to run without Database connection. Limited capability");
 })
