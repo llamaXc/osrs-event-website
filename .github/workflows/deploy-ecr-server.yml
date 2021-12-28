@@ -21,4 +21,5 @@ jobs:
         account_id: 867327836252
         repo: osrsevents
         region: us-east-2
-        path: /server
+        dockerfile: ./server/Dockerfile
+        path: ./server
