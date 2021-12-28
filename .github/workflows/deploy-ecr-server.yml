@@ -20,7 +20,6 @@ jobs:
         secret_access_key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         account_id: ${{ secrets.AWS_ID }}
         repo: osrsevents-server
-        tags: latest
         region: us-east-2
         dockerfile: ./server/Dockerfile
         path: ./server
