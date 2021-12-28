@@ -7,8 +7,22 @@ db.initalize().then(async () => {
 
     try{
         const doesExist = await playerService.doesPlayerExist("1000");
-        if(doesExist === false){
-            await playerService.registerNewPlayer("GIMmyJohns", "1000")
+        const doesExist2 = await playerService.doesPlayerExist("2000");
+
+        try{
+            if(doesExist === false){
+                await playerService.registerNewPlayer("int GIM", "1000")
+            }
+        }catch(e){
+
+        }
+
+        try{
+         if(!doesExist2){
+            await playerService.registerNewPlayer("GIMmyJohns", "2000")
+         }
+        }catch(e){
+            
         }
     }catch(err){
         console.log("Player already exists in db");

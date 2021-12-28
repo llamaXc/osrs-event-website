@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { Quest } from '../entity/Quest';
 import { APIItemDropInformation, SlotName } from '../service/ModelInterfaces/ApiDataTypes';
 import { IPlayerService } from '../service/interfaces/IPlayerService';
@@ -8,8 +8,29 @@ export class PlayerController{
     constructor(private readonly playerService: IPlayerService){}
 
     getPlayerFromSession(res: Response){
-
         return [res.locals.player, res.locals.playerHash]
+    }
+
+    async updateSupplementInformation(req: Request, res: Response, next: NextFunction){
+        const player = res.locals.player;
+        const playerHash = res.locals.playerHash;
+        const {username, combatLevel, position} = req.body['playerInfo'];
+        
+        console.log(username, combatLevel, position)
+
+        if(player && playerHash){
+
+            this.playerService.updateSupplementInformation(
+                player,
+                combatLevel,
+                username,
+                position.x,
+                position.y,
+                position.plane
+            )
+        }
+
+        return next();
     }
 
     async updateLevels(req: Request, res: Response){
@@ -83,6 +104,7 @@ export class PlayerController{
         const data = req.body.data;
 
         const [player, playerHash] = this.getPlayerFromSession(res);
+
         const value = data['gePrice']
 
         await this.playerService.updateInventoryItems(data['inventory'], player, value)
@@ -125,9 +147,37 @@ export class PlayerController{
         return res.json({msg: "Npc loot saved to player"}).status(200);
     }
 
+    async getPlayers(req: Request, res: Response){
+        const players = await this.playerService.getPlayers();
+        const playerResponseArray = []
+        for (const player of players){
+            const {username, id, combatLevel, totalLevel} = player;
+            playerResponseArray.push({username, id, combatLevel, totalLevel});
+        }
+        return res.json({players: playerResponseArray});
+    }
+
+    async getPlayerDetails(req: Request, res: Response){
+        const id = parseInt(req.params.id);
+        console.log(JSON.stringify(req.params, null, 2))
+
+        console.log("ID: " + id)
+
+        const player = await this.playerService.getPlayerById(id);
+        let username = player?.username
+        if(username){
+            console.log("Username: " + username);
+            const playerDetails = await this.playerService.getPlayerByUsername(username);
+            console.log(JSON.stringify(playerDetails, null, 2))
+            return res.json({player: playerDetails});
+        }else{
+            return res.json({msg: "No player with id found"}).status(404);
+        }
+    }
+
     async getAllTest(req : Request, res: Response){
         const player = await this.playerService.getPlayerByUsername(
-            "GIMmyJohns"
+            "int GIM"
         );
 
         if (player) {

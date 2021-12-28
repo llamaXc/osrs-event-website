@@ -1,4 +1,3 @@
-import { Exclude } from "class-transformer";
 import {Entity, Column, BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne, JoinColumn} from "typeorm";
 import { Player } from "./Player";
 

@@ -28,13 +28,18 @@ export class PlayerService implements IPlayerService {
     ) {}
 
     async updateQuestData(player: Player, quests: Quest[], qp: number) {
+        console.log("=== Updating quest data ===")
+        console.log(JSON.stringify(quests));
         return await this._playerRepo.updateQuestData(player, quests, qp);
     }
 
     async doesPlayerExist(playerToken: string) {
-        return (
-            (await this._playerRepo.getPlayerByToken(playerToken)) !== undefined
-        );
+        let p = await this._playerRepo.getPlayerByToken(playerToken)
+        console.log(p?.username + " " + playerToken);
+        let r = p !== undefined;
+        console.log("result: " + r)
+
+        return r
     }
 
     async registerNewPlayer(username: string, key?: string) {
@@ -84,7 +89,6 @@ export class PlayerService implements IPlayerService {
             username,
             combatLevel
         );
-        return player;
     }
 
     async getPlayerById(playerId: number): Promise<Player | undefined> {
@@ -265,10 +269,30 @@ export class PlayerService implements IPlayerService {
         const start = Date.now();
         const wholePlayer = await Player.findOne({
             where: { username: username },
-            relations: ["quests", "kills", "inventory", "equipment"],
+            relations: [ "levels", 'equipment', 'inventory'],
+        });
+        const playerWithQuests = await Player.findOne({
+            where: { username: username },
+            relations: [ 'quests', 'bank'],
         });
         const end = Date.now();
         const executionTime = end - start;
-        return { executionTime, player: wholePlayer };
+        const playerResult = {
+            inventory: wholePlayer?.inventory,
+            equipment: wholePlayer?.equipment,
+            levels: wholePlayer?.levels,
+            quests: playerWithQuests?.quests,
+            username: wholePlayer?.username,
+            questPoints: wholePlayer?.questPoints,
+            combatLevel: wholePlayer?.combatLevel,
+            totalLevel: wholePlayer?.totalLevel,
+            bank: playerWithQuests?.bank
+        }
+        return { executionTime, player: playerResult };
+    }
+
+    async getPlayers(): Promise<Player[]> { 
+        const players = this._playerRepo.getPlayers();
+        return players
     }
 }

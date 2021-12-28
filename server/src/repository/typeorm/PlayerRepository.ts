@@ -49,7 +49,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithBank = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.bank", "bank")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithBank === undefined){
                 throw new Error("Requires valid bank, will buid in catch")
@@ -74,25 +74,32 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
 
     async updateQuestData(player: Player, quests: Quest[], qp: number): Promise<Player>{
         try{
+            console.log("Updating quets!")
             const playerWithQuests = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.quests", "quest")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithQuests === undefined){
+                console.log("undefined!")
                 throw new Error("Requires valid quest, will buid in catch")
             }
+
+            console.log("Dete where player is our player")
 
             // Remove all Quset attached to the current equipment
             await Quest.delete({'player': playerWithQuests});
 
             // Setup the new quests slots for our current equipment
             playerWithQuests.quests = quests;
+            playerWithQuests.questPoints = qp;
 
             // Save and apply the updated quests to our player.
             return await Player.save(playerWithQuests);
         }catch(err){
             // No levels yet for this player, lets make and save one.
+            console.log("no quests found making them now!")
             player.quests = quests;
+            player.questPoints = qp;
             return await Player.save(player);
         }
     }
@@ -104,7 +111,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
     async updatePosition(player: Player, coords: Position): Promise<Player>{
         const playerWithPosition = await Player.createQueryBuilder("player")
         .leftJoinAndSelect("player.position", "position")
-        .where("player_id = :id", {id: player.id}).getOne();
+        .where("player.id = :id", {id: player.id}).getOne();
 
         console.log("Repo: Position update: " + JSON.stringify(coords, null, 2))
 
@@ -129,7 +136,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithInventory = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.inventory", "inventory")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithInventory === undefined){
                 throw new Error("Requires valid inventory, will buid in catch")
@@ -155,7 +162,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithEquipment = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.equipment", "equipment")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithEquipment === undefined){
                 throw new Error("Requires valid equipment, will buid in catch")
@@ -182,7 +189,7 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
         try{
             const playerWithLevels = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.levels", "levels")
-            .where("player_id = :id", {id: player.id}).getOne();
+            .where("player.id = :id", {id: player.id}).getOne();
 
             if(playerWithLevels === undefined){
                 throw new Error("Requires valid levels, will buid in catch")
@@ -194,14 +201,23 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
             // Setup the new levels slots for our current equipment
             playerWithLevels.levels = levels;
 
+            playerWithLevels.totalLevel = totalLevel;
+
             // Save and apply the updated levels to our player.
             return await Player.save(playerWithLevels);
 
         }catch(err){
             // No levels yet for this player, lets make and save one.
              player.levels = levels;
+             player.totalLevel = totalLevel;
              return await Player.save(player);
         }
+    }
+
+    async getPlayers(): Promise<Player[]> {
+        const players = Player.find();
+        console.log(players);
+        return players;
     }
 }
 
