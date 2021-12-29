@@ -1,8 +1,10 @@
-name: Deploy OSRSEvent Server to ECR
+name: Deploy OSRSEvent Server to ECR and ECS
 
 on:
   push:
     branches: [ master ]
+    paths:
+      'server/**'
 
 jobs:
 
@@ -28,8 +30,20 @@ jobs:
       run: |
         aws ecs describe-task-definition --task-definition osrsevents-task-def --query taskDefinition > task-definition.json
       
-    - name: Render Amazon ECS task definition
-      id: render-web-container
+    - name: Deploy image to ECR
+      uses: kciter/aws-ecr-action@v4
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ID }}
+        repo: osrsevents-server
+        tags: latest,${{ github.sha }}
+        region: us-east-2
+        dockerfile: ./server/Dockerfile
+        path: ./server
+      
+    - name: Update ECS Task Definition
+      id: render-server-container
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
@@ -37,22 +51,12 @@ jobs:
         image: 867327836252.dkr.ecr.us-east-2.amazonaws.com/osrsevents-server
         environment-variables: "LOG_LEVEL=info"
 
-    - name: Deploy to Amazon ECS service
+    - name: Deploy ECS Service
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
-        task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+        task-definition: ${{ steps.render-server-container.outputs.task-definition }}
         service: osrs-service
         cluster: osrs-events-cluster
 
-#     - name: Deploy Server Backend
-#       uses: kciter/aws-ecr-action@v4
-#       with:
-#         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#         secret_access_key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#         account_id: ${{ secrets.AWS_ID }}
-#         repo: osrsevents-server
-#         tags: latest,${{ github.sha }}
-#         region: us-east-2
-#         dockerfile: ./server/Dockerfile
-#         path: ./server
+# 
         
