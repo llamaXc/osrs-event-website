@@ -23,6 +23,10 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+  
+    - name: Download task definition
+      run: |
+        aws ecs describe-task-definition --task-definition my-task-definition-family --query osrsevents-task-def > task-definition.json
       
     - name: Render Amazon ECS task definition
       id: render-web-container
