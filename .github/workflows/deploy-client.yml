@@ -16,6 +16,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
+      - run: ls 
+        working-directory: client
       - run: npm ci
         working-directory: ./client 
         
