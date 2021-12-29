@@ -1,5 +1,6 @@
 import create, { SetState, GetState } from "zustand";
 import { devtools } from "zustand/middleware";
+import {API_PATH} from '../config/api'
 
 interface PublicPlayerInfo{
     username: string,
@@ -15,7 +16,7 @@ interface PlayersStore {
 
 const fetchPlayers = async (): Promise<PublicPlayerInfo[]> => {
     console.log("==== Fetching Players =====")
-    const res = await fetch("http://localhost:6501/api-unauth/players");
+    const res = await fetch(API_PATH + "api-unauth/players");
     const jsonRes = await res.json();
 
     const players = jsonRes['players'] as PublicPlayerInfo[];

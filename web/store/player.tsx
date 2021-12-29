@@ -1,5 +1,6 @@
 import create, { SetState, GetState } from "zustand";
 import { devtools } from "zustand/middleware";
+import { API_PATH } from "../config/api";
 import {Equipment, Inventory, Level, Quest} from "../interfaces/"
 
 interface Player{
@@ -19,7 +20,7 @@ interface PlayerStore {
 
 const fetchPlayerById = async (id): Promise<Player> => {
     console.log("==== Load Player =====")
-    const res = await fetch("http://localhost:6501/api-unauth/player/" + id + "/");
+    const res = await fetch(API_PATH + "api-unauth/player/" + id + "/");
     const jsonRes = await res.json();
     const player = jsonRes['player']['player'] as Player;
     return player;
