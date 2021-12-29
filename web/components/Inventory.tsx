@@ -29,6 +29,8 @@ export function Inventory() {
                 setItems(oldItems => [...oldItems, item])
             }
         }
+
+        console.log("Extracted items: " + JSON.stringify(items));
     }
 
     useEffect( () => {
@@ -47,6 +49,11 @@ export function Inventory() {
             { !isLoading &&
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
                 {items.map((item) => {
+                    if(item.name){
+                    console.log("Item being rendered: " + item.name)
+                    }else{
+                        console.log("no item name being rendered")
+                    }
                     return <Grid className="item-temp" item xs={3}>
                         {item.valid &&
                             <Tooltip title={item.name}>
