@@ -20,10 +20,10 @@ export const sqlite3File : ConnectionOptions= {
 
 export const mysqlServer : ConnectionOptions= {
     type: "mysql",
-    host: "mysql_server",
+    host: process.env.DB_ADDRESS || "mysql_server",
     port: 3306,
-    username: "user",
-    password: "user_password",
+    username: process.env.DB_USER || 'user',
+    password: process.env.DB_PASSWORD || "user_password",
     database: "development",
     entities: ["src/entity/*.{ts,js}"],
     synchronize: true,
