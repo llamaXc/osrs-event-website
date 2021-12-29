@@ -13,15 +13,42 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Deploy Server Backend
-      uses: kciter/aws-ecr-action@v4
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        secret_access_key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        account_id: ${{ secrets.AWS_ID }}
-        repo: osrsevents-server
-        tags: latest,${{ github.sha }}
-        region: us-east-2
-        dockerfile: ./server/Dockerfile
-        path: ./server
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+      
+    - name: Render Amazon ECS task definition
+      id: render-web-container
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: web
+        image: 867327836252.dkr.ecr.us-east-2.amazonaws.com/osrsevents-server
+        environment-variables: "LOG_LEVEL=info"
+
+    - name: Deploy to Amazon ECS service
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.render-web-container.outputs.task-definition }}
+        service: osrs-service
+        cluster: osrs-events-cluster
+
+#     - name: Deploy Server Backend
+#       uses: kciter/aws-ecr-action@v4
+#       with:
+#         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#         secret_access_key:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#         account_id: ${{ secrets.AWS_ID }}
+#         repo: osrsevents-server
+#         tags: latest,${{ github.sha }}
+#         region: us-east-2
+#         dockerfile: ./server/Dockerfile
+#         path: ./server
         
