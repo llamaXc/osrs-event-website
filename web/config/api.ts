@@ -1,1 +1,1 @@
-export const API_PATH = 'http://osrs-alb-1491380181.us-east-2.elb.amazonaws.com/'
+export const API_PATH = 'api.osrssocial.com/'
