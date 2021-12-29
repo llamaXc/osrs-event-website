@@ -43,7 +43,7 @@ export function Level() {
         for(let i = 0; i < LEVEL_NAME_TO_POSITION.length; i++){
             const levelName = LEVEL_NAME_TO_POSITION[i];
             const levelFromApi = levels[levelName];
-            let levelToAdd = {name: levelName, level: levelFromApi, id: i, icon: "levels/" + levelName + ".png"}
+            let levelToAdd = {name: levelName, level: levelFromApi, id: i, icon: "/levels/" + levelName + ".png"}
             setLevels(old => [...old, levelToAdd])
         }
     }
