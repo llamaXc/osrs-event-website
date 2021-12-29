@@ -17,14 +17,17 @@ export function Inventory() {
         setItems([]);
          for(let i = 0; i < 28; i++){
             let slot = apiSlots[currentSlotIndex];
+            console.log("SLot: " + i + " " +JSON.stringify(slot))
             if(slot && slot.slotIndex == i){
                 const name = slot.name;
+                console.log("Seeing item: " + name);
                 const slotItem = slot.item;
                 const base64Image = "data:image/png;base64, " + slotItem.icon;
                 let item = {index: i, quantity: slot.quantity, name: slotItem.name, img: base64Image, valid: true }
                 setItems(oldItems => [...oldItems, item])
                 currentSlotIndex++;
             }else{
+                console.log("invalid: " + i)
                 let item = {index: i, valid: false }
                 setItems(oldItems => [...oldItems, item])
             }
