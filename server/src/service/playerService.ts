@@ -290,7 +290,7 @@ export class PlayerService implements IPlayerService {
         return { executionTime, player: playerResult };
     }
 
-    async getPlayers(): Promise<Player[]> { 
+    async getPlayers(): Promise<Player[]> {
         const players = this._playerRepo.getPlayers();
         return players
     }
