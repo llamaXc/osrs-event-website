@@ -23,7 +23,7 @@ jobs:
       - run: npm run build
         working-directory: ./web 
         
-      - run: ls
+      - run: ls web
         
       - uses: aws-actions/configure-aws-credentials@v1
         with:
