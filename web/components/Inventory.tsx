@@ -14,11 +14,13 @@ export function Inventory() {
     //Take API Slots and Turn into Inventory for compomenet
     function buildInventoryWithSlots (apiSlots){
         let currentSlotIndex = 0
+        console.log("==== BUILD INVO ===")
+        console.log(JSON.stringify(apiSlots, null, 2));
+
         setItems([]);
          for(let i = 0; i < 28; i++){
-            let slot = apiSlots[currentSlotIndex];
-            console.log("SLot: " + i + " " +JSON.stringify(slot))
-            if(slot && slot.slotIndex == i){
+            if(i < apiSlots.length){
+                let slot = apiSlots[i];
                 const name = slot.name;
                 console.log("Seeing item: " + name);
                 const slotItem = slot.item;
@@ -26,13 +28,14 @@ export function Inventory() {
                 let item = {index: i, quantity: slot.quantity, name: slotItem.name, img: base64Image, valid: true }
                 setItems(oldItems => [...oldItems, item])
                 console.log("Length: " + items.length);
-                currentSlotIndex++;
             }else{
                 console.log("invalid: " + i)
                 let item = {index: i, valid: false }
                 setItems(oldItems => [...oldItems, item])
             }
             console.log(i + " +===========")
+            // currentSlotIndex++;
+
         }
 
         console.log("Extracted items: " + JSON.stringify(items));
