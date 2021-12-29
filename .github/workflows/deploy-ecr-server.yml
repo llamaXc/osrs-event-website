@@ -26,7 +26,7 @@ jobs:
   
     - name: Download task definition
       run: |
-        aws ecs describe-task-definition --task-definition my-task-definition-family --query osrsevents-task-def > task-definition.json
+        aws ecs describe-task-definition --task-definition my-task-definition-family --query "osrsevents-task-def" > task-definition.json
       
     - name: Render Amazon ECS task definition
       id: render-web-container
