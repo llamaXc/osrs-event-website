@@ -1,1 +1,1 @@
-export const API_PATH = 'http://api.osrssocial.com/'
+export const API_PATH = 'https://api.osrssocial.com/'
