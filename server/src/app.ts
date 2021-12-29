@@ -29,6 +29,10 @@ app.get('/health', (req: Request, res: Response) => {
     return res.send("HEALTHY").status(200);
 })
 
+app.get('/', (req: Request, res: Response) => {
+    return res.send("ping success").status(200);
+})
+
 app.listen( port, () => {
     console.log( `\t> OSRSEvents backend started at http://localhost:${ port }` );
 } );
