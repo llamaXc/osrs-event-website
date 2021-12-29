@@ -30,7 +30,7 @@ const AccountPage = () => {
                 <h1>View a player</h1>
                 <Box display="flex" flexDirection={"column"}>
                 {players && players.map(player => {
-                    return <Link href={"player?id=" + player.id}> Lvl: {player.combatLevel}    {player.username}</Link>
+                    return <Link href={"player/?id=" + player.id}> Lvl: {player.combatLevel}    {player.username}</Link>
                 })}
                 </Box>
                 </div>
