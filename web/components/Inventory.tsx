@@ -34,7 +34,7 @@ export function Inventory() {
     useEffect( () => {
         if(player && player.inventory){
             console.log("BUILD INVENTORY PLEASE!")
-            // console.log(JSON.stringify(player.inventory));
+            console.log(JSON.stringify(player.inventory));
             buildInventoryWithSlots(player.inventory.slots);
             setLoading(false);
         }
