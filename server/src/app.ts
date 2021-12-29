@@ -26,7 +26,7 @@ app.get('/hello', (req: Request, res: Response) => {
 })
 
 app.get('/health', (req: Request, res: Response) => {
-    return res.status(200);
+    return res.send("HEALTHY").status(200);
 })
 
 app.listen( port, () => {
