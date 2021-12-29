@@ -25,12 +25,12 @@ export function Inventory() {
                 const base64Image = "data:image/png;base64, " + slotItem.icon;
                 let item = {index: i, quantity: slot.quantity, name: slotItem.name, img: base64Image, valid: true }
                 setItems(oldItems => [...oldItems, item])
-                currentSlotIndex++;
             }else{
                 console.log("invalid: " + i)
                 let item = {index: i, valid: false }
                 setItems(oldItems => [...oldItems, item])
             }
+            currentSlotIndex++;
         }
 
         console.log("Extracted items: " + JSON.stringify(items));
