@@ -35,7 +35,7 @@ export function Equipment() {
 
     useEffect( () => {
         setLoading(false)
-        if(player){
+        if(player && player.equipment && player.equipment.slots){
             let equipment = player.equipment.slots
             console.log(JSON.stringify(equipment, null, 2))
 
