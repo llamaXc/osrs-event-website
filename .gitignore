@@ -3,6 +3,8 @@ server/bin/
 server/node_modules/
 server/data/mysql/
 
+**/.env
+
 # Front end web ignore
 web/node_modules
 web/.pnp
