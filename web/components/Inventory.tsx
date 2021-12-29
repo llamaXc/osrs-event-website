@@ -30,6 +30,7 @@ export function Inventory() {
                 let item = {index: i, valid: false }
                 setItems(oldItems => [...oldItems, item])
             }
+            console.log(i + " +===========")
             currentSlotIndex++;
         }
 
