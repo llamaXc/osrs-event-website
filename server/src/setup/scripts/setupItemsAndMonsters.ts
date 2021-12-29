@@ -27,6 +27,7 @@ async function importMonsters(){
     const monsterRaw = getDataFromFile(MONSTER_PATH);
     const monstersMap =  new Map(Object.entries(monsterRaw))
     const keys = Array.from(monstersMap.keys())
+    const monsterEntites = []
 
     for (let i = 0; i < keys.length; i++){
         const monster : any = monstersMap.get(keys[i])
@@ -41,8 +42,18 @@ async function importMonsters(){
             console.log("Monsters Imported: " + i);
         }
 
-        await Monster.save(monsterToInsert)
+        monsterEntites.push(monsterToInsert)
+        // await Monster.save(monsterToInsert)
     }
+
+    const res = await Monster.createQueryBuilder()
+        .insert()
+        .values(monsterEntites)
+        .orIgnore()
+        .execute();
+    
+        console.log(JSON.stringify(res));
+
     console.log(">Monsters imported");
 }
 
@@ -50,6 +61,8 @@ async function importItems(){
     const itemRaw = getDataFromFile(ITEM_PATH);
     const itemsMap =  new Map(Object.entries(itemRaw))
     const keys = Array.from(itemsMap.keys())
+    const itemEntites = []
+
     for(let i = 0; i < keys.length; i++){
         const item : any = itemsMap.get(keys[i])
         const itemToInsert = new Item();
@@ -62,7 +75,17 @@ async function importItems(){
             console.log("Items Imported: " + i);
         }
 
-        await Item.save(itemToInsert);
+        itemEntites.push(itemToInsert);
+        // await Item.save(itemToInsert);
     }
+
+
+    const res = await Item.createQueryBuilder()
+        .insert()
+        .values(itemEntites)
+        .orIgnore()
+        .execute();
+    
+    console.log(JSON.stringify(res));
     console.log(">Items imported");
 }
