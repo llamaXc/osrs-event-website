@@ -25,6 +25,10 @@ app.get('/hello', (req: Request, res: Response) => {
     return res.json({msg: "Success!"})
 })
 
+app.get('/health', (req: Request, res: Response) => {
+    return res.status(200);
+})
+
 app.listen( port, () => {
     console.log( `\t> OSRSEvents backend started at http://localhost:${ port }` );
 } );
