@@ -273,7 +273,7 @@ export class PlayerService implements IPlayerService {
         });
         const playerWithQuests = await Player.findOne({
             where: { username: username },
-            relations: [ 'quests', 'bank'],
+            relations: [ 'quests',],
         });
         const end = Date.now();
         const executionTime = end - start;
@@ -286,7 +286,6 @@ export class PlayerService implements IPlayerService {
             questPoints: wholePlayer?.questPoints,
             combatLevel: wholePlayer?.combatLevel,
             totalLevel: wholePlayer?.totalLevel,
-            bank: playerWithQuests?.bank
         }
         return { executionTime, player: playerResult };
     }
