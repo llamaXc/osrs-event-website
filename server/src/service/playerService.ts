@@ -267,25 +267,29 @@ export class PlayerService implements IPlayerService {
 
     async getPlayerByUsername(username: string) {
         const start = Date.now();
-        const wholePlayer = await Player.findOne({
-            where: { username: username },
-            relations: [ "levels", 'equipment', 'inventory'],
-        });
-        const playerWithQuests = await Player.findOne({
-            where: { username: username },
-            relations: [ 'quests',],
-        });
+
+        const playerData = await Player.createQueryBuilder("player")
+        .where("player.username = :username", {username: username})
+        // .innerJoinAndSelect("player.bank", "bank")
+        // .leftJoinAndSelect("bank.slots", "slots")
+        // .leftJoinAndSelect("slots.item", "item")
+        .leftJoinAndSelect("player.quests", "quests")
+        .leftJoinAndSelect("player.levels", "levels")
+        .leftJoinAndSelect("player.equipment", "equipment")
+        .getOne();
+
         const end = Date.now();
         const executionTime = end - start;
         const playerResult = {
-            inventory: wholePlayer?.inventory,
-            equipment: wholePlayer?.equipment,
-            levels: wholePlayer?.levels,
-            quests: playerWithQuests?.quests,
-            username: wholePlayer?.username,
-            questPoints: wholePlayer?.questPoints,
-            combatLevel: wholePlayer?.combatLevel,
-            totalLevel: wholePlayer?.totalLevel,
+            inventory: playerData?.inventory,
+            equipment: playerData?.equipment,
+            levels: playerData?.levels,
+            username: playerData?.username,
+            questPoints: playerData?.questPoints,
+            combatLevel: playerData?.combatLevel,
+            totalLevel: playerData?.totalLevel,
+            quests: playerData?.quests,
+            bank: playerData?.bank
         }
         return { executionTime, player: playerResult };
     }

@@ -8,7 +8,7 @@ export class BankSlot extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => Item, {lazy: true})
+    @ManyToOne(() => Item, {eager: true})
     @JoinTable()
     item: Item
 
