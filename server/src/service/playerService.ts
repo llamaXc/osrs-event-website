@@ -278,11 +278,15 @@ export class PlayerService implements IPlayerService {
         .leftJoinAndSelect("player.equipment", "equipment")
         .getOne();
 
+        const playerWithInvo = await Player.findOne({where: {username: username}, 
+            relations: ['inventory', 'equipment'],
+        })
+
         const end = Date.now();
         const executionTime = end - start;
         const playerResult = {
-            inventory: playerData?.inventory,
-            equipment: playerData?.equipment,
+            inventory: playerWithInvo?.inventory,
+            equipment: playerWithInvo?.equipment,
             levels: playerData?.levels,
             username: playerData?.username,
             questPoints: playerData?.questPoints,
