@@ -15,9 +15,15 @@ export class AuthRuneliteMiddleware{
 
         const authBearer = header['authorization']
 
+
+        console.log(req.body)
+
         if(req.body['playerInfo'] === undefined){
             console.log("No player info attached to message")
         }
+        console.log("Request headers: " + JSON.stringify(header))
+        console.log("Request body: " + JSON.stringify(req.body, null, 2))
+
         const playerHash = authBearer?.split(' ')[1]
 
         if(playerHash === undefined || playerHash === ""){
