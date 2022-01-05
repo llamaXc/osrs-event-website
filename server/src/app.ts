@@ -1,5 +1,5 @@
 import "reflect-metadata";
-require('dotenv').config();
+// require('dotenv').config();
 import "./setup/initalize"
 import { Request, Response } from 'express';
 
