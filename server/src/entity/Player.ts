@@ -13,8 +13,11 @@ export class Player extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ unique: true, nullable: true })
+    @Column({ nullable: true })
     username: string
+
+    @Column({nullable: true})
+    displayName: string
 
     @Column({ unique: true })
     token: string
