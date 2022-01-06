@@ -54,7 +54,7 @@ export function Equipment() {
         "head",
         "empty",
         "cape",
-        "necklace",
+        "amulet",
         "ammo",
         "weapon",
         "body",

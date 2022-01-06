@@ -74,7 +74,8 @@ export class TypeOrmPlayerRepository implements IPlayerRepository{
 
     async updateQuestData(player: Player, quests: Quest[], qp: number): Promise<Player>{
         try{
-            console.log("Updating quets!")
+            console.log("Updating quests!")
+            console.log("New QP: " + qp);
             const playerWithQuests = await Player.createQueryBuilder("player")
             .leftJoinAndSelect("player.quests", "quest")
             .where("player.id = :id", {id: player.id}).getOne();
