@@ -207,6 +207,15 @@ export class PlayerController{
         }
     }
 
+    async getBankForPlayer(req: Request, res: Response){
+        try{
+            const id = parseInt(req.params.id);
+            const bankRes = await this.playerService.getPlayerBankById(id)
+            return res.json(bankRes).status(200);
+        }catch(err){
+            return res.json("Failed").status(500)
+        }
+    }
     async getAllTest(req : Request, res: Response){
         try{
             throw new Error("Failling")

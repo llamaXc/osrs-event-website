@@ -15,5 +15,6 @@ router.post('/bank', controller.updateSupplementInformation.bind(controller), co
 router.get('/', controller.getAllTest.bind(controller))
 router.get('/players', controller.getPlayers.bind(controller))
 router.get("/player/:id", controller.getPlayerDetails.bind(controller))
+router.get("/player/:id/bank", controller.getBankForPlayer.bind(controller))
 
 export = router;

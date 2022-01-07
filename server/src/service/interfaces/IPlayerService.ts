@@ -59,5 +59,7 @@ export interface IPlayerService {
         player: Player
     ): Promise<Player>;
 
+    getPlayerBankById(id: number): Promise<any>;
+
     getPlayerByUsername(username: string): Promise<any>;
 }

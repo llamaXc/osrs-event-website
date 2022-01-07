@@ -265,34 +265,40 @@ export class PlayerService implements IPlayerService {
         return await this._playerRepo.updateBank(player, bank);
     }
 
-    async getPlayerByUsername(username: string) {
+    async getPlayerBankById(id: number){
         const start = Date.now();
 
         const playerData = await Player.createQueryBuilder("player")
-        .where("player.username = :username", {username: username})
+        .where("player.id = :id", {id: id})
         .innerJoinAndSelect("player.bank", "bank")
         .leftJoinAndSelect("bank.slots", "slots")
         .leftJoinAndSelect("slots.item", "item")
-        .leftJoinAndSelect("player.levels", "levels")
         .getOne();
 
-        const playerWithInvo = await Player.findOne({where: {username: username}, 
-            relations: ['inventory', 'equipment', 'quests'],
+        const end = Date.now();
+        const executionTime = end - start;
+        return { executionTime, bank: playerData?.bank };
+    }
+    async getPlayerByUsername(username: string) {
+        const start = Date.now();
+
+        const playerInfo = await Player.findOne({where: {username: username},
+            relations: ['inventory', 'equipment', 'quests', 'levels'],
         })
 
         const end = Date.now();
         const executionTime = end - start;
         const playerResult = {
-            inventory: playerWithInvo?.inventory,
-            equipment: playerWithInvo?.equipment,
-            levels: playerData?.levels,
-            username: playerWithInvo?.username,
-            questPoints: playerWithInvo?.questPoints,
-            combatLevel: playerWithInvo?.combatLevel,
-            totalLevel: playerWithInvo?.totalLevel,
-            quests: playerWithInvo?.quests,
-            bank: playerData?.bank
+            inventory: playerInfo?.inventory,
+            equipment: playerInfo?.equipment,
+            levels: playerInfo?.levels,
+            username: playerInfo?.username,
+            questPoints: playerInfo?.questPoints,
+            combatLevel: playerInfo?.combatLevel,
+            totalLevel: playerInfo?.totalLevel,
+            quests: playerInfo?.quests,
         }
+
         return { executionTime, player: playerResult };
     }
 
