@@ -282,8 +282,13 @@ export class PlayerService implements IPlayerService {
     async getPlayerByUsername(username: string) {
         const start = Date.now();
 
+        const playerData = await Player.createQueryBuilder("player")
+        .where("player.username = :username", {username: username})
+        .innerJoinAndSelect("player.levels", "levels")
+        .getOne();
+
         const playerInfo = await Player.findOne({where: {username: username},
-            relations: ['inventory', 'equipment', 'quests', 'levels'],
+            relations: ['inventory', 'equipment', 'quests'],
         })
 
         const end = Date.now();
@@ -291,7 +296,7 @@ export class PlayerService implements IPlayerService {
         const playerResult = {
             inventory: playerInfo?.inventory,
             equipment: playerInfo?.equipment,
-            levels: playerInfo?.levels,
+            levels: playerData?.levels,
             username: playerInfo?.username,
             questPoints: playerInfo?.questPoints,
             combatLevel: playerInfo?.combatLevel,
