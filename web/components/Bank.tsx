@@ -5,6 +5,9 @@ import { usePlayerStore } from "../store/player";
 export function Bank() {
 
     const player = usePlayerStore(state => state.player);
+    const bank = usePlayerStore(state => state.player.bank);
+
+    const updateBank = usePlayerStore(state => state.updateBank)
     const [items, setItems] = useState([])
     const [filter, setFilter] = useState("")
 
@@ -22,14 +25,16 @@ export function Bank() {
         }
     }
 
-    useEffect( () => {
-        if(player && player.bank){
-            console.log("BUILD Bank PLEASE!")
-            console.log(JSON.stringify(player.bank));
-            buildBank(player.bank);
+    useEffect(() => {
+        updateBank();
+    }, [])
+
+    useEffect(() => {
+        if(bank && bank.slots){
+            buildBank(bank);
         }
-        console.log("NO BANK TODAY")
-    },[player])
+    }, [bank])
+
 
 
     function updateSearch(e){

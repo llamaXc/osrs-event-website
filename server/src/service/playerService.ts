@@ -285,10 +285,12 @@ export class PlayerService implements IPlayerService {
         const playerData = await Player.createQueryBuilder("player")
         .where("player.username = :username", {username: username})
         .innerJoinAndSelect("player.levels", "levels")
+        .innerJoinAndSelect("player.quests", "quests")
+
         .getOne();
 
         const playerInfo = await Player.findOne({where: {username: username},
-            relations: ['inventory', 'equipment', 'quests'],
+            relations: ['inventory', 'equipment'],
         })
 
         const end = Date.now();
@@ -296,12 +298,12 @@ export class PlayerService implements IPlayerService {
         const playerResult = {
             inventory: playerInfo?.inventory,
             equipment: playerInfo?.equipment,
+            quests: playerData?.quests,
             levels: playerData?.levels,
             username: playerInfo?.username,
             questPoints: playerInfo?.questPoints,
             combatLevel: playerInfo?.combatLevel,
             totalLevel: playerInfo?.totalLevel,
-            quests: playerInfo?.quests,
         }
 
         return { executionTime, player: playerResult };

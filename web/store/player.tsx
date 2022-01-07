@@ -16,7 +16,9 @@ interface Player{
 }
 interface PlayerStore {
     player: Player;
+    id: number;
     getPlayer: (id) => void;
+    updateBank: () => void;
 }
 
 const fetchPlayerById = async (id): Promise<Player> => {
@@ -27,9 +29,17 @@ const fetchPlayerById = async (id): Promise<Player> => {
     console.log("==== Player fetched====")
     console.log(player.bank)
     console.log(JSON.stringify(player, null, 2))
-
     return player;
 };
+
+const updatebank = async(id): Promise<Bank> => {
+    console.log("==== Load Player =====")
+    const res = await fetch(API_PATH + "api-unauth/player/" + id + "/bank");
+    const jsonRes = await res.json();
+    console.log(JSON.stringify(jsonRes, null, 2))
+    const bank = jsonRes['bank'] as Bank;
+    return bank;
+}
 
 export const usePlayerStore = create<PlayerStore>(
     devtools((set: SetState<PlayerStore>, get: GetState<PlayerStore>) => ({
@@ -44,10 +54,18 @@ export const usePlayerStore = create<PlayerStore>(
             equipment: {id: 0, slots: []},
             bank: {id: 0, slots: []}
         },
+        id: -1,
         getPlayer: async (id) => {
             const player = await fetchPlayerById(id);
             console.log("SETTING PLAYER!");
+            set({id: id})
             set({ player: player });
         },
+        updateBank: async() => {
+            console.log("Updateing bank!")
+            const curPlayer = get().player
+            curPlayer.bank = await updatebank(get().id);
+            set({player: curPlayer})
+        }
     }))
 );
