@@ -50,3 +50,8 @@ export interface Quest{
   name: string,
   state: string
 }
+
+export interface Bank{
+  id: number,
+  slots?: InventorySlot[]
+}

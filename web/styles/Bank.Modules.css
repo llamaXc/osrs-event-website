@@ -1,0 +1,17 @@
+.bankContainer{
+    background-color: rgb(74, 64, 54);
+    width: 90vw;
+    height: 70vh;
+    overflow-y: auto;
+    padding: 20px;
+    /* margin: 20px; */
+}
+
+#bankSearch{
+    width: 100%;
+    color: white !important;
+}
+
+#bankSearch input{
+    color: white
+}

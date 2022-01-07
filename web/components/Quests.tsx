@@ -11,7 +11,7 @@ export function Quests() {
     const [filter, setFilter] = useState("")
 
     useEffect( () => {
-        if(player){
+        if(player && player.quests){
             console.log("Buildilng quests")
             setQuests(player.quests)
             setQp(player.questPoints);

@@ -20,7 +20,7 @@ const PlayerPage = () => {
     useEffect(() => {console.log(player)}, [player])
 
     return (
-        <Layout title='Landing'>
+        <Layout title={player.username}>
             <Box className="player-ui-container">
                 <h1>{player && player.username} Level: {player && player.combatLevel}</h1>
                 <MainPanel/>

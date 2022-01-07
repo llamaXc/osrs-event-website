@@ -9,6 +9,7 @@ export function Level() {
     const [levels, setLevels] = useState([])
     const [isLoading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
+    const [validLevels, setValidLevels] = useState(false)
 
     const LEVEL_NAME_TO_POSITION = [
         "attack",
@@ -49,7 +50,7 @@ export function Level() {
     }
 
     useEffect( () => {
-        if(player){
+        if(player && player.levels){
             console.log("Building levels!")
             const levels = player.levels;
             setTotal(player.totalLevel)
@@ -61,16 +62,20 @@ export function Level() {
 
             buildLevels(mapLevels)
             setLoading(false)
+            setValidLevels(true)
+        }else if(player.levels === undefined){
+            setLoading(false);
+            setValidLevels(false)
         }
 
     },[player])
 
 
     return (
-        // <div className="invo-wrapper">
             <div className="invo-container">
                 { isLoading && <CircularProgress className="loader" />}
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
+                {!validLevels && <p color="white">No levels found found for {player.username} </p>}
+                {validLevels && <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 1, md: 1 }}>
                     {levels.map((level) => {
                         return <Grid  item key={level.id} xs={4}>
                             <div className="level-slot">
@@ -89,7 +94,7 @@ export function Level() {
                         </Grid>
                     }
                 </Grid>
+                }
             </div>
-        // </div>
     )
 }

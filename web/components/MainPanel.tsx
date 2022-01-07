@@ -7,6 +7,7 @@ import {Inventory} from "./Inventory"
 import {Level} from "./Level"
 import { Equipment } from './Equipment'
 import {Quests} from "./Quests"
+import {Bank} from './Bank'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,12 +46,13 @@ export function MainPanel() {
   };
 
   return (
-      <Box className="panel" sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box className="mainPanelUi" sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs className="iconTabs" value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab className="iconTab" icon={<img src="/icons/inventory.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/level.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/equipment.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/quest.png" />}/>
+          <Tab className="iconTab" icon={<img src="/icons/bank.png" />}/>
 
         </Tabs>
           <TabPanel value={value} index={0}>
@@ -74,6 +76,11 @@ export function MainPanel() {
           <TabPanel value={value} index={3}>
             <div className="main-wrapper">
               <Quests/>
+            </div>
+          </TabPanel>
+          <TabPanel value={value} index={4}>
+            <div className="main-wrapper">
+              <Bank/>
             </div>
           </TabPanel>
       </Box>

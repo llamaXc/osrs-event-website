@@ -8,6 +8,11 @@ import "../styles/Level.Modules.css"
 import "../styles/Equipment.Modules.css"
 import "../styles/Layout.Modules.css"
 import "../styles/Quests.Modules.css"
+import "../styles/Index.Modules.css"
+import "../styles/AccountPage.Modules.css"
+import "../styles/MainPanel.Modules.css"
+import "../styles/Bank.Modules.css"
+
 export default function MyApp(props) {
     const { Component, pageProps } = props;
 

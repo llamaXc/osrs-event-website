@@ -1,0 +1,13 @@
+#mainContainer{
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    text-align: center;
+}
+
+.mainButton{
+    margin: 10px !important;
+}

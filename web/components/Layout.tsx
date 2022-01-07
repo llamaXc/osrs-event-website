@@ -20,7 +20,7 @@ const Layout = ({ children, title = "This is the default title" }: Props) => {
             </Head>
             <header>
                 <nav className="navbar">
-                    <Link href='home'>
+                    <Link href='/'>
                         <a>Home</a>
                     </Link>
 
