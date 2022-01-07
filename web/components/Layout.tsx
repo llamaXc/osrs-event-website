@@ -29,8 +29,9 @@ const Layout = ({ children, title = "This is the default title" }: Props) => {
                     </Link>
                 </nav>
             </header>
-            {children}
-            <hr/>
+            <div className="bodyContent">
+                {children}
+            </div>
         </div>
     );
 };

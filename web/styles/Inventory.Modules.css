@@ -7,16 +7,18 @@
     border: 5px solid black;
     background-color: rgb(74, 64, 54);
     margin: auto;
-    padding: 10px;
+    /* padding: 10px; */
     width: fit-content;
 }
 
 .iconTab{
     /* border: 4px solid black; */
+    margin: -10px;
 }
 
 .iconTab img{
-    width: 20px
+    width: 20px;
+    height: 20px;
 }
 
 .tabpanel-container{
@@ -33,7 +35,7 @@
     background-color: rgb(74, 64, 54);
     border: 5px solid black;
     padding: 10px;
-    height: 60vh;
+    height: 70vh;
     max-width: 600px;
 }
 

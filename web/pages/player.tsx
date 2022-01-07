@@ -22,7 +22,8 @@ const PlayerPage = () => {
     return (
         <Layout title={player.username}>
             <Box className="player-ui-container">
-                <h1>{player && player.username} Level: {player && player.combatLevel}</h1>
+                <h1>{player && player.username}</h1>
+                <p>Level: {player && player.combatLevel}</p>
                 <MainPanel/>
             </Box>
         </Layout>

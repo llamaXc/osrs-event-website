@@ -53,7 +53,6 @@ export function MainPanel() {
           <Tab className="iconTab" icon={<img src="/icons/equipment.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/quest.png" />}/>
           <Tab className="iconTab" icon={<img src="/icons/bank.png" />}/>
-
         </Tabs>
           <TabPanel value={value} index={0}>
             <div className="main-wrapper">

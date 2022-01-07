@@ -11,3 +11,12 @@
 .mainButton{
     margin: 10px !important;
 }
+
+
+.bodyContent{
+    max-width: 600px;
+    /* background-color: red; */
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}

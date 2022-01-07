@@ -4,6 +4,7 @@
     height: 70vh;
     overflow-y: auto;
     padding: 20px;
+    border: 5px solid black;
     /* margin: 20px; */
 }
 

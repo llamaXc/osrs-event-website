@@ -40,13 +40,19 @@
 }
 
 .player-ui-container{
-    width: 50%;
     display: flex;
     flex-direction: column;
     /* background-color: black; */
     justify-content: center;
     align-items: center;
     margin: auto;
+}
+
+.player-ui-container h1{
+    margin-bottom: 0px;
+}
+.player-ui-container p{
+    margin-top: 0px;
 }
 
 .not-started{
